@@ -11,18 +11,18 @@ class ProductsList extends StatefulWidget {
 }
 
 class _ProductsListState extends State<ProductsList> {
-  // final apiService = ApiService();
+  final apiService = ApiService();
   late Future<List<Product>> products;
 
   @override
   void initState() {
     super.initState();
-    // _getProducts(); // Initialize the future in initState
+    _getProducts(); // Initialize the future in initState
   }
 
   void _getProducts() {
     setState(() {
-      // products = apiService.getProducts();
+      products = apiService.getProducts();
     });
   }
 

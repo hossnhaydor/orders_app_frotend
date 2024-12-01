@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: const Center(
-        child: Text('s'),
+        child: ProductsList(),
       ),
     );
   }
