@@ -70,6 +70,28 @@ class ApiService {
     }
   }
 
+  Future<List<Product>> getUserCart(id) async {
+    try {
+      final res = await http.get(Uri.parse('${baseUrl}cart/${id}'));
+      if (res.statusCode == 200) {
+        final Map<String, dynamic> jsonRes = jsonDecode(res.body);
+        if (jsonRes['success'] == true) {
+          final List<dynamic> productsJson = jsonRes['cart_items'];
+          List<Product> products = productsJson
+              .map((product) => Product.fromJson(product['product']))
+              .toList()
+              .cast<Product>();
+          return products;
+        } else {
+          return [];
+        }
+      }
+      return [];
+    } catch (err) {
+      return [];
+    }
+  }
+
   // Future<Product> ProdcutInfo(int id) async {
   //   try {
   //     final res = await http.get(Uri.parse('${baseUrl}product/$id'));
