@@ -68,7 +68,7 @@ class ApiService {
       return [];
     }
   }
-  
+
   // Future<Product> ProdcutInfo(int id) async {
   //   try {
   //     final res = await http.get(Uri.parse('${baseUrl}product/$id'));
@@ -84,5 +84,4 @@ class ApiService {
   //     return new Product();
   //   }
   // }
-
 }

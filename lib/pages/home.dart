@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:orders/widgets/home/products_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: const Center(
-        child: Column(),
+        child: ProductsList(),
       ),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orders/order.dart';
+import 'package:orders/pages/order.dart';
 import 'package:orders/widgets/Layout.dart';
 
 void main() {

@@ -17,7 +17,7 @@ class _LayoutState extends State<Layout> {
   int _currentIndex = 1;
 
   final List<Widget> _pages = [
-    const WishlistPage(),
+    const Wishlist(),
     const HomePage(),
     const UserPage(),
   ];
