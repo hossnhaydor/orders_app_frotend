@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:orders/order.dart';
 import 'package:orders/widgets/Layout.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
           background: const Color.fromARGB(255, 238, 238, 238),
         ),
       ),
-      home: const Layout(),
+      home: const Order(),
     );
   }
 }
