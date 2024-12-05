@@ -1,6 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:orders/api/services/auth_service.dart';
 import 'package:orders/pages/signup.dart';
+import 'package:orders/providers/user.dart';
+import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -10,285 +12,250 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  final formsign = GlobalKey<FormState>();
-  final TextEditingController phonecon = TextEditingController();
-  final TextEditingController usernamecon = TextEditingController();
-  bool rememberPassword = true;
-  String? pass;
-  String? conf;
-  String? validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return "please confirm password";
-    } else if (value != pass) {
-      return "error";
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+
+  String? _password;
+  bool loading = false;
+  Map<String, dynamic> _errors = {
+    "email": "",
+    "name": "",
+    "password": "",
+  };
+
+  void _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final apiService = AuthService();
+    try {
+      setState(() {
+        loading = true;
+        _errors = {
+          "email": "",
+        };
+      });
+      final res = await apiService.register(
+        _nameController.text,
+        _passwordController.text,
+        _confirmPasswordController.text,
+        _phoneController.text,
+      );
+      setState(() {
+        loading = false;
+      });
+      if (res['error'] != null) {
+        if (res['errors'] != null) {
+          setState(() {
+            _errors = res['errors'];
+          });
+        }
+        throw ();
+      }
+
+      // ignore: use_build_context_synchronously
+      Provider.of<UserProvider>(context, listen: false).setUser(res['user']);
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+      // Handle error (e.g., show dialog or snackbar)
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("check your network")),
+      );
     }
-    return "";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Back'),
-          elevation: 0,
-          backgroundColor: Colors.orange,
-        ),
-        extendBodyBehindAppBar: true,
-        body: Stack(children: [
-          /*  Image.asset('images/ff.jpeg',
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,),*/
-          Container(
-            height: 300,
-            color: Colors.white,
-          ),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        actions: const [],
+      ),
+      body: Stack(
+        children: [
           SafeArea(
-              child: Column(
+            child: Column(
+              children: [
+                _buildFormContainer(),
+                const SizedBox(
+                  height: 10,
+                ),
+                loading ? const CircularProgressIndicator() : const Text('')
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFormContainer() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
+      ),
+      child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
             children: [
-              Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                    height: 10,
-                  )),
-              Expanded(
-                  flex: 7,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(25, 50, 25, 20),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(40),
-                            topRight: Radius.circular(40))),
-                    child: SingleChildScrollView(
-                      child: Form(
-                        key: formsign,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Creat Account',
-                              style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.orange),
-                            ),
-                            Container(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              controller: usernamecon,
-                              keyboardType: TextInputType.name,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'please enter user name';
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                  label: Text('User Name'),
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.orange),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.orange))),
-                            ),
-                            Container(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              controller: phonecon,
-                              keyboardType: TextInputType.phone,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'please enter phone number';
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                  label: Text('Phone Number'),
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.orange),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.orange))),
-                            ),
-                            Container(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              obscureText: true,
-                              obscuringCharacter: '*',
-                              onChanged: (value) {
-                                pass = value;
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'please enter password';
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                  label: Text('Password'),
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.orange),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.orange))),
-                            ),
-                            Container(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              obscureText: true,
-                              obscuringCharacter: '*',
-                              validator: validateConfirmPassword,
-                              decoration: InputDecoration(
-                                  label: Text('confirm Password'),
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.orange),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.orange))),
-                            ),
-                            Container(
-                              height: 10,
-                            ),
-                            /*   Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-
-                                    children: [
-                                      Checkbox(
-                                        value: rememberPassword,
-                                        onChanged: (bool? value){
-                                          setState(() {
-                                            rememberPassword=value!;
-                                          });
-                                        },
-                                        activeColor: Colors.cyan,
-                                      ),
-                                      Text('Remember me',style: TextStyle(
-                                        color: Colors.black
-                                      ),)
-                                    ],
-                                  ),
-                                  GestureDetector(
-                                    child: Text('Forget password',
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold
-                                    ),),
-                                  )
-                                ],
-                              ),*/
-                            Container(
-                              height: 10,
-                            ),
-                            Container(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (formsign.currentState!.validate()) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text('processing Data')),
-                                    );
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'please agree to the processing of personaly')));
-                                  }
-                                },
-                                child: Text('Sign up'),
-                              ),
-                            ),
-                            Container(
-                              height: 50,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Already have an account?',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (e) => SignUp()));
-                                  },
-                                  child: Text(
-                                    'Sign in',
-                                    style: TextStyle(color: Colors.orange),
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 50,
-                            ),
-                            /*    Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(child: Divider(
-                                    thickness: 0.7,
-                                    color: Colors.grey.withOpacity(0.5),
-                                  )
-                                  ),
-                                  Padding(padding: EdgeInsets.symmetric(
-                                    vertical: 0,horizontal: 10
-                                  ),
-                                    child: Text('or continue with',
-                                    style: TextStyle(
-                                      color: Colors.orange
-                                    ),),
-                                  ),
-                                  Expanded(child: Divider(
-                                    thickness: 0.7,
-                                    color: Colors.grey.withOpacity(0.5),
-                                  )
-                                  ),
-
-                                ],
-                              ),
-                              Container(height: 50,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Logo(Logos.facebook_f),
-                                  Logo(Logos.twitter),
-                                  Logo(Logos.google),
-                                  Logo(Logos.apple),
-
-                                ],
-                              ),*/
-                            Container(
-                              height: 10,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ))
+              const Text(
+                'Create Account',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildTextField(
+                controller: _nameController,
+                error: _errors['name'],
+                label: "User Name",
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Enter user name' : null,
+              ),
+              _buildTextField(
+                controller: _phoneController,
+                error: _errors['email'],
+                label: "Phone Number",
+                keyboardType: TextInputType.phone,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Enter phone number'
+                    : null,
+              ),
+              _buildTextField(
+                controller: _passwordController,
+                error: _errors['password'],
+                label: "Password",
+                obscureText: true,
+                onChanged: (value) => _password = value,
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Enter password' : null,
+              ),
+              _buildTextField(
+                controller: _confirmPasswordController,
+                error: _errors['name'],
+                label: "Confirm Password",
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Confirm your password";
+                  } else if (value != _password) {
+                    return "Passwords do not match";
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildSubmitButton(),
+              const SizedBox(height: 20),
+              _buildSignInPrompt(),
             ],
-          ))
-        ]));
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    String? error,
+    String? Function(String?)? validator,
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+    void Function(String)? onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        children: [
+          TextFormField(
+            controller: controller,
+            obscureText: obscureText,
+            obscuringCharacter: '*',
+            keyboardType: keyboardType,
+            onChanged: onChanged,
+            validator: validator,
+            decoration: InputDecoration(
+              label: Text(label),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              error != null
+                  ? Flexible(
+                      child: Text(
+                        error,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    )
+                  : const Text(''),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: _submit,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: const Text(
+          'Sign Up',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignInPrompt() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          'Already have an account? ',
+          style: TextStyle(color: Colors.black),
+        ),
+        InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (e) => const SignUp()),
+            );
+          },
+          child: const Text(
+            'Sign In',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
+    );
   }
 }

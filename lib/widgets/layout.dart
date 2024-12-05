@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:orders/pages/home.dart';
 import 'package:orders/pages/user.dart';
 import 'package:orders/pages/wishlist.dart';
+import 'package:orders/providers/cart.dart';
+import 'package:orders/providers/wlist_ids.dart';
+import 'package:provider/provider.dart';
 
 class Layout extends StatefulWidget {
   const Layout({super.key});
@@ -15,7 +18,7 @@ List<String> navTitle = ["Wishlist", "Home", "Settings"];
 
 class _LayoutState extends State<Layout> {
   int _currentIndex = 1;
-
+  final PageController _pageController = PageController(initialPage: 1);
   final List<Widget> _pages = [
     const Wishlist(),
     const HomePage(),
@@ -23,14 +26,30 @@ class _LayoutState extends State<Layout> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final wishListProvider =
+          Provider.of<WishListIdsProvider>(context, listen: false);
+      final cartProvider = Provider.of<CartIdsProvider>(context, listen: false);
+      wishListProvider.getIds("token");
+      cartProvider.getIds("token");
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: IndexedStack(
-          index: _currentIndex,
-          children: _pages,
-        ),
-      ),
+          child: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        children: _pages,
+      )),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
         decoration: BoxDecoration(
@@ -56,6 +75,7 @@ class _LayoutState extends State<Layout> {
           backgroundColor: Colors.transparent,
           onTap: (index) => {
             setState(() {
+              _pageController.jumpToPage(index);
               _currentIndex = index;
             })
           },

@@ -1,12 +1,26 @@
-// import 'package:flutter/material.dart';
-//
-// class User {
-//   final String name;
-//   final int id;
-//   final String image;
-//   final String phoneNumber;
-//   final String location;
-//   User({required this.id,required this.name,required this.name})
-// }
-//
-// class UserProvider extends ChangeNotifier {}
+import 'package:flutter/material.dart';
+import 'package:orders/models/User.dart';
+
+class UserProvider extends ChangeNotifier {
+  User? _user;
+  bool _isLoading = true;
+
+  User? get user => _user;
+  bool get loading => _isLoading;
+
+  void setUser(User? user) {
+    _user = user;
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  void clearUser() {
+    _user = null;
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  void setLoading(bool isLoading) {
+    _isLoading = isLoading;
+  }
+}
