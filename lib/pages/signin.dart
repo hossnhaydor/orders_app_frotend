@@ -101,7 +101,7 @@ class _SignInState extends State<SignIn> {
     return Container(
       padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
       decoration: const BoxDecoration(
-        color: Colors.transparent,
+        color: Colors.white,
       ),
       child: SingleChildScrollView(
         child: Form(
