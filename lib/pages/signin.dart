@@ -82,14 +82,16 @@ class _SignInState extends State<SignIn> {
       body: Stack(
         children: [
           SafeArea(
-            child: Column(
-              children: [
-                _buildFormContainer(),
-                const SizedBox(
-                  height: 10,
-                ),
-                loading ? const CircularProgressIndicator() : const Text('')
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildFormContainer(),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  loading ? const CircularProgressIndicator() : const Text('')
+                ],
+              ),
             ),
           ),
         ],
