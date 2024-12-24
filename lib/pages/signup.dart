@@ -37,6 +37,7 @@ class _SignUpState extends State<SignUp> {
       setState(() {
         loading = false;
       });
+      print(res);
       if (res['error'] != null) {
         if (res['message'] != null) {
           setState(() {

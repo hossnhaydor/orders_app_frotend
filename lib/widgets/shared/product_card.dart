@@ -36,37 +36,63 @@ class ProductCard extends StatelessWidget {
       color: Colors.white,
       elevation: 10,
       margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Stack(
+      child: SizedBox(
+        height: 200,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Positioned(
-              top: 0,
-              right: 0,
-              child: !isInWishlist
-                  ? IconButton(
-                      onPressed: () => {addToWishList(context)},
-                      icon: const Icon(Icons.favorite_border_rounded),
-                    )
-                  : IconButton(
-                      onPressed: () => {removeFromWishList(context)},
-                      icon: const Icon(Icons.favorite),
+            Stack(
+              alignment: Alignment.topRight,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Productinfo(product: p),
+                        ),
+                      );
+                    },
+                    child: Image.network(
+                      'https://images.squarespace-cdn.com/content/v1/59da11e98419c28f51bab499/1550098469650-ZZ3JVUW5MOSE2BUQWO8J/1182_0027.jpg?format=750w',
+                      height: 150,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
                     ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => isInWishlist
+                      ? removeFromWishList(context)
+                      : addToWishList(context),
+                  icon: Icon(
+                    isInWishlist
+                        ? Icons.favorite
+                        : Icons.favorite_border_rounded,
+                  ),
+                ),
+              ],
             ),
+            const Spacer(),
             GestureDetector(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Productinfo(product: p)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Productinfo(product: p),
+                  ),
+                );
               },
-              child: SizedBox(
-                height: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(p.name),
-                    Text("price :${p.price}"),
+                    Text(p.name, style: const TextStyle(fontSize: 16)),
+                    Text("price:${p.price}",
+                        style: const TextStyle(fontSize: 14)),
                   ],
                 ),
               ),

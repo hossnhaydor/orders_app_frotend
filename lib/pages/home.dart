@@ -3,6 +3,7 @@ import 'package:orders/pages/cart.dart';
 import 'package:orders/pages/signup.dart';
 import 'package:orders/providers/user.dart';
 import 'package:orders/widgets/home/products_list.dart';
+import 'package:orders/widgets/home/search_delegate.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,7 +29,9 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              showSearch(context: context, delegate: CustomSearchDelegate());
+            },
             icon: const Icon(Icons.search),
           ),
           user != null

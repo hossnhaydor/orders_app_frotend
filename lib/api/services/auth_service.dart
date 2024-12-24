@@ -6,7 +6,7 @@ import '../../models/User.dart';
 class AuthService {
   final String baseUrl = "http://127.0.0.1:8000/api/";
   Future<Map<String, dynamic>> register(
-      name, password, passwordConfirmation, phoneNumber) async {
+      name, password, passwordConfirmation, phoneNumber, location) async {
     try {
       var res = await http.post(Uri.parse("${baseUrl}register"),
           headers: {
@@ -16,8 +16,9 @@ class AuthService {
           body: jsonEncode({
             "password": password,
             "password_confirmation": passwordConfirmation,
-            "email": phoneNumber,
             "name": name,
+            "phone_number": phoneNumber,
+            "Location": location
           }));
       if (res.statusCode == 201) {
         final jsonResponse = jsonDecode(res.body);
@@ -31,8 +32,8 @@ class AuthService {
         "message": "Register faild",
         "error": true,
         'errors': {
-          "email": (errors['email'] != null && errors['email'] is List)
-              ? errors['email'][0]
+          "phone": (errors['phone'] != null && errors['phone'] is List)
+              ? errors['phone'][0]
               : "",
           "name": (errors['name'] != null && errors['name'] is List)
               ? errors['name'][0]
@@ -40,15 +41,19 @@ class AuthService {
           "password": (errors['password'] != null && errors['password'] is List)
               ? errors['password'][0]
               : "",
+          "location": (errors['location'] != null && errors['location'] is List)
+              ? errors['location'][0]
+              : "",
         },
         "user": null
       };
     } catch (err) {
+      print(err);
       return {"error": true, "user": null};
     }
   }
 
-  Future<Map<String, dynamic>> login(email, password) async {
+  Future<Map<String, dynamic>> login(phone_number, password) async {
     try {
       var res = await http.post(Uri.parse("${baseUrl}login"),
           headers: {
@@ -57,14 +62,13 @@ class AuthService {
           },
           body: jsonEncode({
             "password": password,
-            "email": email,
+            "phone_number": phone_number,
           }));
+      final jsonResponse = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        final jsonResponse = jsonDecode(res.body);
         final auth = AuthResponse.fromJson(jsonResponse['data']);
         return {'token': auth.token, 'user': auth.user};
       }
-      final jsonResponse = jsonDecode(res.body);
       return {
         "message": jsonResponse['message'],
         "error": true,
@@ -72,6 +76,7 @@ class AuthService {
         "user": null
       };
     } catch (err) {
+      print(err);
       return {"error": true, "user": null};
     }
   }
@@ -94,5 +99,29 @@ class AuthService {
     await http.get(Uri.parse("${baseUrl}user"), headers: {
       "Authorization": "Bearer $token",
     });
+  }
+
+  Future<dynamic> changeUserInfo(token, name, phone, location) async {
+    final res = await http.post(
+      Uri.parse("${baseUrl}user/changeInfo"),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization":
+            "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
+      },
+      body: jsonEncode({
+        "name": name,
+        "phone_number": phone,
+        "Location": location,
+      }),
+    );
+    final jsonRes = jsonDecode(res.body);
+    print(jsonRes);
+    if (res.statusCode == 200) {
+      User user = User.fromJson(jsonRes);
+      return user;
+    }
+    return null;
   }
 }

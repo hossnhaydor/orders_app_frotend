@@ -12,7 +12,7 @@ class CartService {
         "Content-type": "application/json",
         "Accept": "application/json",
         "Authorization":
-            "Bearer 1|itTs7qT8KjEJYPb58odpR0ISKO8lyIV2VPWuaXxu444d46ca",
+            "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
       });
       final Map<String, dynamic> jsonRes = await jsonDecode(res.body);
       if (res.statusCode == 200) {
@@ -36,14 +36,15 @@ class CartService {
             "Content-type": "application/json",
             "Accept": "application/json",
             "Authorization":
-                "Bearer 1|itTs7qT8KjEJYPb58odpR0ISKO8lyIV2VPWuaXxu444d46ca",
+                "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
           },
-          body: jsonEncode({'product_id': product_id}));
+          body: jsonEncode({'product_id': product_id, "product_count": 1}));
       if (res.statusCode == 201) {
         return {'message': 'added successfully', 'success': true};
       }
       return {'error': true, 'message': 'failed to add item to cart'};
     } catch (err) {
+      print(err);
       return {
         "error": true,
       };
@@ -58,7 +59,7 @@ class CartService {
           "Content-type": "application/json",
           "Accept": "application/json",
           "Authorization":
-              "Bearer 1|itTs7qT8KjEJYPb58odpR0ISKO8lyIV2VPWuaXxu444d46ca",
+              "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
         },
         body: jsonEncode({'item_id': product_id}),
       );
@@ -79,7 +80,7 @@ class CartService {
         "Content-type": "application/json",
         "Accept": "application/json",
         "Authorization":
-            "Bearer 1|itTs7qT8KjEJYPb58odpR0ISKO8lyIV2VPWuaXxu444d46ca",
+            "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
       });
       Map<String, dynamic> jsonRes = jsonDecode(res.body);
       if (res.statusCode == 200) {

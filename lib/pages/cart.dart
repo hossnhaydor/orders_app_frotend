@@ -30,6 +30,27 @@ class _CartPageState extends State<CartPage> {
     return await cartService.getUserCart('token');
   }
 
+  void _addItem(context, id) async {
+    final cs = CartService();
+    final res = await cs.removeFromCart("token", id);
+    if (res['success'] != null) {
+      setState(() {
+        _productsFuture = _productsFuture.then((response) {
+          final updateProducts = response.getProducts
+              .where((product) => product.id != id)
+              .toList()
+              .cast<Product>();
+          return ProductsApiResponse(
+            error: response.error,
+            products: updateProducts,
+          );
+        });
+      });
+      // ignore: use_build_context_synchronously
+      Provider.of<CartIdsProvider>(context, listen: false).removeId(id);
+    }
+  }
+
   void _removeItem(context, id) async {
     final cs = CartService();
     final res = await cs.removeFromCart("token", id);
@@ -93,6 +114,7 @@ class _CartPageState extends State<CartPage> {
               child: CartListItems(
                 items: snapshot.data!.getProducts,
                 removeItem: _removeItem,
+                addItem: _addItem,
               ),
             );
           }

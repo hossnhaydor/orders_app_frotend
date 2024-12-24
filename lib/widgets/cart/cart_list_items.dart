@@ -5,10 +5,13 @@ import 'package:orders/widgets/cart/cart_list_card.dart';
 class CartListItems extends StatelessWidget {
   final List<Product> items;
   final Function(BuildContext, int) removeItem;
+  final Function(BuildContext, int) addItem;
+
   const CartListItems({
     super.key,
     required this.items,
     required this.removeItem,
+    required this.addItem,
   });
 
   @override
@@ -20,6 +23,7 @@ class CartListItems extends StatelessWidget {
         return CartListCard(
           item: items[i],
           removeItem: removeItem,
+          addItem: addItem,
         );
       },
     );

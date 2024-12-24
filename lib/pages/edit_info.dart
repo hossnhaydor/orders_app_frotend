@@ -1,34 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:orders/api/services/auth_service.dart';
-import 'package:orders/pages/signup.dart';
 import 'package:orders/providers/user.dart';
 import 'package:provider/provider.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class EditInfo extends StatefulWidget {
+  const EditInfo({super.key});
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<EditInfo> createState() => _EditInfoState();
 }
 
-class _SignInState extends State<SignIn> {
+class _EditInfoState extends State<EditInfo> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
-  String? _password;
   bool loading = false;
-  Map<String, dynamic> _errors = {
-    "email": "",
-    "name": "",
-    "password": "",
-    "location": ""
-  };
+  Map<String, dynamic> _errors = {"name": "", "phone": "", "location": ""};
 
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -41,10 +30,9 @@ class _SignInState extends State<SignIn> {
           "email": "",
         };
       });
-      final res = await apiService.register(
+      final res = await apiService.changeUserInfo(
+        "token",
         _nameController.text,
-        _passwordController.text,
-        _confirmPasswordController.text,
         _phoneController.text,
         _locationController.text,
       );
@@ -116,7 +104,7 @@ class _SignInState extends State<SignIn> {
           child: Column(
             children: [
               const Text(
-                'Create Account',
+                'Update Info',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -141,29 +129,6 @@ class _SignInState extends State<SignIn> {
                     : null,
               ),
               _buildTextField(
-                controller: _passwordController,
-                error: _errors['password'],
-                label: "Password",
-                obscureText: true,
-                onChanged: (value) => _password = value,
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter password' : null,
-              ),
-              _buildTextField(
-                controller: _confirmPasswordController,
-                error: _errors['name'],
-                label: "Confirm Password",
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Confirm your password";
-                  } else if (value != _password) {
-                    return "Passwords do not match";
-                  }
-                  return null;
-                },
-              ),
-              _buildTextField(
                 controller: _locationController,
                 error: _errors['location'],
                 label: "Location",
@@ -174,7 +139,6 @@ class _SignInState extends State<SignIn> {
               const SizedBox(height: 20),
               _buildSubmitButton(),
               const SizedBox(height: 20),
-              _buildSignInPrompt(),
             ],
           ),
         ),
@@ -243,34 +207,10 @@ class _SignInState extends State<SignIn> {
           ),
         ),
         child: const Text(
-          'Sign Up',
+          'Submit',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
-    );
-  }
-
-  Widget _buildSignInPrompt() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Already have an account? ',
-          style: TextStyle(color: Colors.black),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (e) => const SignUp()),
-            );
-          },
-          child: const Text(
-            'Sign In',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
     );
   }
 }

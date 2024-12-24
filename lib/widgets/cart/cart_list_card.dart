@@ -4,7 +4,12 @@ import 'package:orders/models/Product.dart';
 class CartListCard extends StatelessWidget {
   final Product item;
   final Function(BuildContext, int) removeItem;
-  const CartListCard({super.key, required this.item, required this.removeItem});
+  final Function(BuildContext, int) addItem;
+  const CartListCard(
+      {super.key,
+      required this.item,
+      required this.addItem,
+      required this.removeItem});
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +56,16 @@ class CartListCard extends StatelessWidget {
                       alignment: Alignment.bottomRight,
                       children: [
                         Positioned(
-                          child: IconButton(
-                              onPressed: () {
-                                removeItem(context, item.id);
-                              },
-                              icon: const Icon(
-                                Icons.cancel_outlined,
-                              )),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                  onPressed: () {}, child: const Text('+')),
+                              const Text('2'),
+                              TextButton(
+                                  onPressed: () {}, child: const Text('-'))
+                            ],
+                          ),
                         )
                       ],
                     ),

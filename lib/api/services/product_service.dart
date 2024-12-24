@@ -24,6 +24,25 @@ class ProductServices {
     }
   }
 
+  Future<ProductsApiResponse<List<Product>>> getStoreProducts(storeId) async {
+    try {
+      final res =
+          await http.get(Uri.parse('${baseUrl}store/products/$storeId'));
+      final Map<String, dynamic> jsonRes = jsonDecode(res.body);
+      if (res.statusCode == 200) {
+        final List<dynamic> productsJson = jsonRes['products'];
+        List<Product> products = productsJson
+            .map((product) => Product.fromJson(product))
+            .toList()
+            .cast<Product>();
+        return ProductsApiResponse(products: products);
+      }
+      return ProductsApiResponse(products: []);
+    } catch (err) {
+      return ProductsApiResponse(error: 'check network connection');
+    }
+  }
+
   Future<ProductsApiResponse<List<Product>>> getUserCart(id) async {
     try {
       final res = await http.get(Uri.parse('${baseUrl}cart/items'), headers: {
