@@ -30,7 +30,7 @@ class ProductServices {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "Authorization":
-            "Bearer 23|zOPjJRr0Ynleta3UXyR3ATMPCm7MbEnPm7QlJ4gWb7f868c1",
+            "Bearer 1|itTs7qT8KjEJYPb58odpR0ISKO8lyIV2VPWuaXxu444d46ca",
       });
       if (res.statusCode == 200) {
         final Map<String, dynamic> jsonRes = jsonDecode(res.body);
