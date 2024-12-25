@@ -48,7 +48,6 @@ class AuthService {
         "user": null
       };
     } catch (err) {
-      print(err);
       return {"error": true, "user": null};
     }
   }
@@ -76,23 +75,26 @@ class AuthService {
         "user": null
       };
     } catch (err) {
-      print(err);
       return {"error": true, "user": null};
     }
   }
 
   Future<dynamic> getUserByToken(token) async {
-    final res = await http.get(Uri.parse("${baseUrl}user"), headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-      "Authorization": "Bearer $token",
-    });
-    if (res.statusCode == 200) {
-      final jsonRes = jsonDecode(res.body);
-      User user = User.fromJson(jsonRes);
-      return user;
+    try {
+      final res = await http.get(Uri.parse("${baseUrl}user"), headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+      });
+      if (res.statusCode == 200) {
+        final jsonRes = jsonDecode(res.body);
+        User user = User.fromJson(jsonRes);
+        return user;
+      }
+      return null;
+    } catch (err) {
+      return null;
     }
-    return null;
   }
 
   Future<void> logout(token) async {
@@ -117,7 +119,6 @@ class AuthService {
       }),
     );
     final jsonRes = jsonDecode(res.body);
-    print(jsonRes);
     if (res.statusCode == 200) {
       User user = User.fromJson(jsonRes);
       return user;

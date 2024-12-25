@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:orders/api/services/auth_service.dart';
 import 'package:orders/pages/signup.dart';
+import 'package:orders/providers/token.dart';
 import 'package:orders/providers/user.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +30,14 @@ class _SignInState extends State<SignIn> {
     "password": "",
     "location": ""
   };
+
+  Future<void> _storeToken(String token) async {
+    try {
+      var box = Hive.box('mybox');
+      await box.put('token', token);
+      // ignore: empty_catches
+    } catch (err) {}
+  }
 
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -59,10 +68,12 @@ class _SignInState extends State<SignIn> {
         }
         throw ();
       }
-      // print(res['token']);
-
+      //  res['token'];
+      await _storeToken(res['token']);
       // ignore: use_build_context_synchronously
       Provider.of<UserProvider>(context, listen: false).setUser(res['user']);
+      // ignore: use_build_context_synchronously
+      Provider.of<TokenProvider>(context, listen: false).login(res['token']);
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {

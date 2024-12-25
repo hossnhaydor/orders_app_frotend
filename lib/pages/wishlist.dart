@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:orders/api/products_api_response.dart';
 import 'package:orders/api/services/wishlist_service.dart';
 import 'package:orders/models/Product.dart';
+import 'package:orders/models/User.dart';
+import 'package:orders/pages/guest.dart';
+import 'package:orders/providers/user.dart';
 import 'package:orders/providers/wlist_ids.dart';
 import 'package:orders/widgets/shared/retry_button.dart';
 import 'package:orders/widgets/wishlist/wishlist_items.dart';
@@ -54,46 +57,50 @@ class _ExampleState extends State<Wishlist> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        actions: const [],
-        title: const Text(
-          "Wishlist",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-        ),
-      ),
-      body: FutureBuilder(
-          future: items,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return const Center(
-                child: Text("Somthing went worng"),
-              );
-            } else if (snapshot.hasData && snapshot.data!.hasError) {
-              return Center(
-                child: RetryButton(
-                  message: snapshot.data!.getError,
-                  retry: _getItems,
-                ),
-              );
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text("no items saved"),
-              );
-            } else {
-              return Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: WishListItems(
-                  items: snapshot.data!.getProducts,
-                  removeItem: _removeItem,
-                ),
-              );
-            }
-          }),
-    );
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    User? user = userProvider.user;
+    return user == null
+        ? const Guest()
+        : Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              backgroundColor: Colors.transparent,
+              actions: const [],
+              title: const Text(
+                "Wishlist",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              ),
+            ),
+            body: FutureBuilder(
+                future: items,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Somthing went worng"),
+                    );
+                  } else if (snapshot.hasData && snapshot.data!.hasError) {
+                    return Center(
+                      child: RetryButton(
+                        message: snapshot.data!.getError,
+                        retry: _getItems,
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text("no items saved"),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: WishListItems(
+                        items: snapshot.data!.getProducts,
+                        removeItem: _removeItem,
+                      ),
+                    );
+                  }
+                }),
+          );
   }
 }

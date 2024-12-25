@@ -3,7 +3,7 @@ import 'package:orders/api/services/wishlist_service.dart';
 
 class WishListIdsProvider extends ChangeNotifier {
   Set<int> ids = {};
-  void getIds(token) async {
+  Future<void> getIds(token) async {
     final result = await WishlistService().getUserWishlistIds(token);
     if (result['ids'] != null) {
       ids = result['ids'].cast<int>();
@@ -19,5 +19,9 @@ class WishListIdsProvider extends ChangeNotifier {
   void removeId(id) {
     ids.remove(id);
     notifyListeners();
+  }
+
+  void clearList() {
+    ids = {};
   }
 }

@@ -3,7 +3,7 @@ import 'package:orders/api/services/cart_service.dart';
 
 class CartIdsProvider extends ChangeNotifier {
   Set<int> ids = {};
-  void getIds(token) async {
+  Future<void> getIds(token) async {
     final result = await CartService().getUserCartIds(token);
     if (result['ids'] != null) {
       ids = result['ids'].cast<int>();
@@ -20,4 +20,9 @@ class CartIdsProvider extends ChangeNotifier {
     ids.remove(id);
     notifyListeners();
   }
+
+  void clearList() {
+    ids = {};
+  }
+  
 }

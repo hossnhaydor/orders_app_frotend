@@ -57,7 +57,7 @@ class ProductCard extends StatelessWidget {
                     },
                     child: Image.network(
                       'https://images.squarespace-cdn.com/content/v1/59da11e98419c28f51bab499/1550098469650-ZZ3JVUW5MOSE2BUQWO8J/1182_0027.jpg?format=750w',
-                      height: 150,
+                      height: 170,
                       width: double.infinity,
                       fit: BoxFit.cover,
                     ),

@@ -13,7 +13,7 @@ class User {
       phone: "${json['phone_number']}",
       id: json['id'],
       name: json['name'],
-      isAdmin: json['is_admin'],
+      isAdmin: json['is_admin'] == true ? 1 : 0,
     );
   }
 }

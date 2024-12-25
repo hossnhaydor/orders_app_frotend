@@ -12,7 +12,7 @@ class HomeList extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: 2.5,
         crossAxisSpacing: 2.5,
-        childAspectRatio: 0.7, 
+        childAspectRatio: .65,
       ),
       itemCount: prodcuts.length,
       itemBuilder: (context, i) {

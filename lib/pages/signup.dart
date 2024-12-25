@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:orders/api/services/auth_service.dart';
 import 'package:orders/pages/signin.dart';
+import 'package:orders/providers/cart.dart';
+import 'package:orders/providers/token.dart';
+import 'package:orders/providers/wlist_ids.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user.dart';
@@ -51,8 +54,18 @@ class _SignUpState extends State<SignUp> {
       // ignore: use_build_context_synchronously
       Provider.of<UserProvider>(context, listen: false).setUser(res['user']);
       // ignore: use_build_context_synchronously
+      Provider.of<TokenProvider>(context, listen: false).login(res['token']);
+
+      // ignore: use_build_context_synchronously
+      Provider.of<WishListIdsProvider>(context, listen: false)
+          .getIds(res['token']);
+      // ignore: use_build_context_synchronously
+      Provider.of<CartIdsProvider>(context, listen: false).getIds(res['token']);
+
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {
+      print(e);
       setState(() {
         loading = false;
       });
