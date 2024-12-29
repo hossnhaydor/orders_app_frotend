@@ -64,6 +64,7 @@ class AuthService {
             "phone_number": phone_number,
           }));
       final jsonResponse = jsonDecode(res.body);
+      print(jsonResponse);
       if (res.statusCode == 200) {
         final auth = AuthResponse.fromJson(jsonResponse['data']);
         return {'token': auth.token, 'user': auth.user};
@@ -75,6 +76,7 @@ class AuthService {
         "user": null
       };
     } catch (err) {
+      print(err);
       return {"error": true, "user": null};
     }
   }
@@ -109,8 +111,7 @@ class AuthService {
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
-        "Authorization":
-            "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
+        "Authorization": "Bearer $token",
       },
       body: jsonEncode({
         "name": name,
@@ -124,5 +125,42 @@ class AuthService {
       return user;
     }
     return null;
+  }
+
+  Future<Map<String, dynamic>> addToWallet(token, amount, password) async {
+    try {
+      var res = await http.post(Uri.parse("${baseUrl}user/wallet"),
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+          },
+          body: jsonEncode({
+            "ammount": amount,
+            "password": password,
+          }));
+      final jsonResponse = jsonDecode(res.body);
+      print(jsonResponse);
+      if (res.statusCode == 200) {
+        return {'success': 'amount added to wallet'};
+      }
+      final errors = jsonResponse['errors'] ?? {};
+
+      return {
+        "message": "operation faild",
+        "error": true,
+        'errors': {
+          "ammount": (errors['ammount'] != null && errors['ammount'] is List)
+              ? errors['ammount'][0]
+              : "",
+          "password": (errors['password'] != null && errors['password'] is List)
+              ? errors['password'][0]
+              : "",
+        },
+      };
+    } catch (err) {
+      print(err);
+      return {"error": true, "user": null};
+    }
   }
 }

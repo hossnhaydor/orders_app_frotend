@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:orders/api/services/auth_service.dart';
 import 'package:orders/pages/signin.dart';
 import 'package:orders/providers/cart.dart';
@@ -24,6 +25,14 @@ class _SignUpState extends State<SignUp> {
     "message": "",
   };
 
+  Future<void> _storeToken(String token) async {
+    try {
+      var box = Hive.box('mybox');
+      await box.put('token', token);
+      // ignore: empty_catches
+    } catch (err) {}
+  }
+
   void _login() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -40,7 +49,6 @@ class _SignUpState extends State<SignUp> {
       setState(() {
         loading = false;
       });
-      print(res);
       if (res['error'] != null) {
         if (res['message'] != null) {
           setState(() {
@@ -50,6 +58,8 @@ class _SignUpState extends State<SignUp> {
         }
         throw ();
       }
+
+      await _storeToken(res['token']);
 
       // ignore: use_build_context_synchronously
       Provider.of<UserProvider>(context, listen: false).setUser(res['user']);
@@ -65,7 +75,6 @@ class _SignUpState extends State<SignUp> {
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {
-      print(e);
       setState(() {
         loading = false;
       });

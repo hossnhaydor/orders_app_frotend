@@ -14,8 +14,7 @@ class WishlistService {
           await http.get(Uri.parse('${baseUrl}wishlist/items'), headers: {
         "Content-type": "application/json",
         "Accept": "application/json",
-        "Authorization":
-            "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
+        "Authorization": "Bearer $token",
       });
       final Map<String, dynamic> jsonRes = await jsonDecode(res.body);
       if (res.statusCode == 200) {
@@ -40,8 +39,7 @@ class WishlistService {
         headers: {
           "Content-type": "application/json",
           "Accept": "application/json",
-          "Authorization":
-              "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
+          "Authorization": "Bearer ${user_token}",
         },
         body: jsonEncode({'product_id': product_id}),
       );
@@ -65,8 +63,7 @@ class WishlistService {
         headers: {
           "Content-type": "application/json",
           "Accept": "application/json",
-          "Authorization":
-              "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
+          "Authorization": "Bearer ${user_token}",
         },
         body: jsonEncode({'item_id': product_id}),
       );
@@ -86,8 +83,7 @@ class WishlistService {
       final res = await http.get(Uri.parse('${baseUrl}wishlist/ids'), headers: {
         "Content-type": "application/json",
         "Accept": "application/json",
-        "Authorization":
-            "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
+        "Authorization": "Bearer ${token}",
       });
       Map<String, dynamic> jsonRes = jsonDecode(res.body);
       if (res.statusCode == 200) {

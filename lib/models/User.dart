@@ -3,16 +3,19 @@ class User {
   final String name;
   final String phone;
   final int isAdmin;
+  double ammount;
   User(
       {required this.phone,
       required this.id,
       required this.name,
-      required this.isAdmin});
+      required this.isAdmin,
+      required this.ammount});
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       phone: "${json['phone_number']}",
       id: json['id'],
       name: json['name'],
+      ammount: json['wallet'] ?? 0,
       isAdmin: json['is_admin'] == true ? 1 : 0,
     );
   }

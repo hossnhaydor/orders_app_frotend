@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:orders/api/products_api_response.dart';
 import 'package:orders/api/services/wishlist_service.dart';
 import 'package:orders/models/Product.dart';
@@ -21,16 +22,22 @@ class _ExampleState extends State<Wishlist> {
   bool state = false;
   late Future<ProductsApiResponse<List<Product>>> items;
 
-  void _getItems() async {
-    setState(() {
-      final s = WishlistService();
-      items = s.getUserWishlist('token');
-    });
+  Future<String?> getToken() async {
+    var box = Hive.box('myBox'); // Open the box
+    String? token = box.get('token'); // Retrieve the token with the key 'token'
+    return token;
+  }
+
+  Future<ProductsApiResponse<List<Product>>> _getItems() async {
+    final wishlistService = WishlistService();
+    String? token = await getToken();
+    return await wishlistService.getUserWishlist(token);
   }
 
   void _removeItem(context, id) async {
     final ws = WishlistService();
-    final res = await ws.removeFromWishlist("token", id);
+    String? token = await getToken();
+    final res = await ws.removeFromWishlist(token, id);
     if (res['success'] != null) {
       setState(() {
         items = items.then((response) {
@@ -52,7 +59,7 @@ class _ExampleState extends State<Wishlist> {
   @override
   void initState() {
     super.initState();
-    _getItems();
+    items = _getItems();
   }
 
   @override

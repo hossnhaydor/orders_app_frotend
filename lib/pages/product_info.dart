@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:orders/api/services/cart_service.dart';
 import 'package:orders/models/Product.dart';
 import 'package:orders/providers/cart.dart';
+import 'package:orders/providers/token.dart';
 import 'package:provider/provider.dart';
 
 class Productinfo extends StatelessWidget {
@@ -11,7 +12,8 @@ class Productinfo extends StatelessWidget {
 
   void addProductToCart(context) async {
     final cs = CartService();
-    final res = await cs.addProductToCart("2", product.id);
+    String? token = Provider.of<TokenProvider>(context, listen: false).token;
+    final res = await cs.addProductToCart(token, product.id);
     if (res['success'] != null) {
       // ignore: use_build_context_synchronously
       Provider.of<CartIdsProvider>(context, listen: false).addId(product.id);

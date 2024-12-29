@@ -25,7 +25,12 @@ class UserProvider extends ChangeNotifier {
     _isLoading = isLoading;
   }
 
-  Future<void> getUserByToken(String token) async {
+  void increaseAmmount(double ammount) {
+    _user!.ammount += ammount;
+    notifyListeners();
+  }
+
+  Future<bool> getUserByToken(String token) async {
     try {
       AuthService auth = AuthService();
       final result = await auth.getUserByToken(token);
@@ -34,8 +39,9 @@ class UserProvider extends ChangeNotifier {
       }
       _user = result;
       notifyListeners();
+      return true;
     } catch (err) {
-      return null;
+      return false;
     }
   }
 }

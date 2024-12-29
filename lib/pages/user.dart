@@ -5,6 +5,7 @@ import 'package:orders/pages/admin.dart';
 import 'package:orders/pages/edit_info.dart';
 import 'package:orders/pages/guest.dart';
 import 'package:orders/pages/order.dart';
+import 'package:orders/pages/wallet.dart';
 import 'package:orders/providers/cart.dart';
 import 'package:orders/providers/page_index.dart';
 import 'package:orders/providers/user.dart';
@@ -14,164 +15,131 @@ import 'package:provider/provider.dart';
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
 
-  void logout(context) {
-    PageIndexPorvider pageIndexPorvider =
-        Provider.of<PageIndexPorvider>(context, listen: false);
+  void logout(BuildContext context) {
     var box = Hive.box('myBox');
     box.delete('token');
     Provider.of<UserProvider>(context, listen: false).setUser(null);
     Provider.of<WishListIdsProvider>(context, listen: false).clearList();
     Provider.of<CartIdsProvider>(context, listen: false).clearList();
-    pageIndexPorvider.changePage(1);
+    Provider.of<PageIndexPorvider>(context, listen: false).changePage(1);
+  }
+
+  Widget buildButton({
+    required BuildContext context,
+    required String text,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 70,
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: Icon(icon),
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    User? user = userProvider.user;
+    User? user = Provider.of<UserProvider>(context).user;
+
     return user == null
         ? const Guest()
         : Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.transparent,
             appBar: AppBar(
               title: const Text("Profile Page"),
+              backgroundColor: Colors.transparent,
+              actions: const [],
             ),
             body: Center(
-              child: Column(
-                children: [
-                  const CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage("images/zz.jpg"),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const CircleAvatar(
+                        radius: 50,
+                        backgroundImage: AssetImage("images/zz.jpg"),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        user.name,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      buildButton(
+                        context: context,
+                        text: "Edit Profile",
+                        icon: Icons.edit,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const EditInfo()),
+                        ),
+                      ),
+                      buildButton(
+                        context: context,
+                        text: "Track Order",
+                        icon: Icons.shopping_cart,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const Order()),
+                        ),
+                      ),
+                      buildButton(
+                        context: context,
+                        text: "Admin",
+                        icon: Icons.admin_panel_settings,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const AdminPage()),
+                        ),
+                      ),
+                      buildButton(
+                        context: context,
+                        text: "Wallet",
+                        icon: Icons.wallet,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const Wallet()),
+                        ),
+                      ),
+                      buildButton(
+                        context: context,
+                        text: "Logout",
+                        icon: Icons.logout,
+                        onTap: () => logout(context),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "hossn",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const EditInfo(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                        height: 70,
-                        width: 350,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: const Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.edit),
-                            ),
-                            Center(
-                                child: Text(
-                              "Edit profile",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ))
-                          ],
-                        )),
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Order(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                        height: 70,
-                        width: 350,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: const Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.shopping_cart),
-                            ),
-                            Center(
-                                child: Text(
-                              "Track order",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ))
-                          ],
-                        )),
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AdminPage(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                        height: 70,
-                        width: 350,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: const Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.admin_panel_settings),
-                            ),
-                            Center(
-                                child: Text(
-                              "Admin",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ))
-                          ],
-                        )),
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () {
-                      logout(context);
-                    },
-                    child: Container(
-                        height: 70,
-                        width: 350,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: const Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.logout),
-                            ),
-                            Center(
-                                child: Text(
-                              "LogOut",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ))
-                          ],
-                        )),
-                  ),
-                ],
+                ),
               ),
             ),
           );

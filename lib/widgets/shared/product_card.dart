@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:orders/api/services/wishlist_service.dart';
 import 'package:orders/models/Product.dart';
 import 'package:orders/pages/product_info.dart';
@@ -9,9 +10,16 @@ class ProductCard extends StatelessWidget {
   final Product p;
   const ProductCard({super.key, required this.p});
 
+  Future<String?> getToken() async {
+    var box = Hive.box('myBox'); // Open the box
+    String? token = box.get('token'); // Retrieve the token with the key 'token'
+    return token;
+  }
+
   void addToWishList(BuildContext context) async {
     final ws = WishlistService();
-    final res = await ws.addProductToWishlist("2", p.id);
+    String? token = await getToken();
+    final res = await ws.addProductToWishlist(token, p.id);
     if (res['success'] != null) {
       // ignore: use_build_context_synchronously
       Provider.of<WishListIdsProvider>(context, listen: false).addId(p.id);
@@ -20,7 +28,8 @@ class ProductCard extends StatelessWidget {
 
   void removeFromWishList(BuildContext context) async {
     final ws = WishlistService();
-    final res = await ws.removeFromWishlist("2", p.id);
+    String? token = await getToken();
+    final res = await ws.removeFromWishlist(token, p.id);
     if (res['success'] != null) {
       // ignore: use_build_context_synchronously
       Provider.of<WishListIdsProvider>(context, listen: false).removeId(p.id);

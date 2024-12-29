@@ -1,5 +1,3 @@
-import 'package:orders/models/Product.dart';
-
 class Cart {
   final List<Map<String, dynamic>>? items;
   double? price;

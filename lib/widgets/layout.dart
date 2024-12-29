@@ -5,6 +5,7 @@ import 'package:orders/pages/user.dart';
 import 'package:orders/pages/wishlist.dart';
 import 'package:orders/providers/cart.dart';
 import 'package:orders/providers/page_index.dart';
+import 'package:orders/providers/token.dart';
 import 'package:orders/providers/user.dart';
 import 'package:orders/providers/wlist_ids.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +35,11 @@ class _LayoutState extends State<Layout> {
     return token;
   }
 
+  Future<void> _removeToken() async {
+    var box = Hive.box('myBox'); // Open the box
+    await box.delete('token'); // Retrieve the token with the key 'token'
+  }
+
   @override
   void initState() {
     super.initState();
@@ -49,9 +55,17 @@ class _LayoutState extends State<Layout> {
           setState(() {
             loading = true;
           });
-          await userProvider.getUserByToken(token);
-          await wishListProvider.getIds(token);
-          await cartProvider.getIds(token);
+          bool res = await userProvider.getUserByToken(token);
+          if (!res) {
+            _removeToken();
+            // ignore: use_build_context_synchronously
+            Provider.of<TokenProvider>(context, listen: false).logout();
+          } else {
+            // ignore: use_build_context_synchronously
+            Provider.of<TokenProvider>(context, listen: false).login(token);
+            await wishListProvider.getIds(token);
+            await cartProvider.getIds(token);
+          }
         }
         setState(() {
           loading = false;

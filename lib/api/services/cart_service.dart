@@ -11,8 +11,7 @@ class CartService {
       final res = await http.get(Uri.parse('${baseUrl}cart/items'), headers: {
         "Content-type": "application/json",
         "Accept": "application/json",
-        "Authorization":
-            "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
+        "Authorization": "Bearer ${token}",
       });
       final Map<String, dynamic> jsonRes = await jsonDecode(res.body);
       if (res.statusCode == 200) {
@@ -35,8 +34,7 @@ class CartService {
           headers: {
             "Content-type": "application/json",
             "Accept": "application/json",
-            "Authorization":
-                "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
+            "Authorization": "Bearer ${user_token}",
           },
           body: jsonEncode({'product_id': product_id, "product_count": 1}));
       if (res.statusCode == 201) {
@@ -58,8 +56,7 @@ class CartService {
         headers: {
           "Content-type": "application/json",
           "Accept": "application/json",
-          "Authorization":
-              "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
+          "Authorization": "Bearer ${user_token}",
         },
         body: jsonEncode({'item_id': product_id}),
       );
@@ -79,8 +76,7 @@ class CartService {
       final res = await http.get(Uri.parse('${baseUrl}cart/ids'), headers: {
         "Content-type": "application/json",
         "Accept": "application/json",
-        "Authorization":
-            "Bearer 6|7XZzxfXonjXY9ornkVNDuGiL0F61cwv8SPWyN5Zr77a9dad8",
+        "Authorization": "Bearer $token",
       });
       Map<String, dynamic> jsonRes = jsonDecode(res.body);
       if (res.statusCode == 200) {
