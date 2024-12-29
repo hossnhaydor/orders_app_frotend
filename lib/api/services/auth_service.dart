@@ -5,8 +5,8 @@ import '../../models/User.dart';
 
 class AuthService {
   final String baseUrl = "http://127.0.0.1:8000/api/";
-  Future<Map<String, dynamic>> register(
-      name, password, passwordConfirmation, phoneNumber, location) async {
+  Future<Map<String, dynamic>> register(name, password, passwordConfirmation,
+      phoneNumber, location, isAdmin) async {
     try {
       var res = await http.post(Uri.parse("${baseUrl}register"),
           headers: {
@@ -18,14 +18,15 @@ class AuthService {
             "password_confirmation": passwordConfirmation,
             "name": name,
             "phone_number": phoneNumber,
-            "Location": location
+            "Location": location,
+            "is_admin": isAdmin
           }));
+      final jsonResponse = jsonDecode(res.body);
+      print(jsonResponse);
       if (res.statusCode == 201) {
-        final jsonResponse = jsonDecode(res.body);
         final auth = AuthResponse.fromJson(jsonResponse['data']);
         return {'token': auth.token, 'user': auth.user};
       }
-      final jsonResponse = jsonDecode(res.body);
       final errors = jsonResponse['errors'] ?? {};
 
       return {

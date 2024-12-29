@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:orders/api/products_api_response.dart';
+import 'package:orders/api/cartItems_api_response.dart';
+import 'package:orders/models/CartItem.dart';
 import 'package:orders/models/Product.dart';
 
 class CartService {
   final String baseUrl = "http://127.0.0.1:8000/api/";
-  Future<ProductsApiResponse<List<Product>>> getUserCart(token) async {
+  Future<CartItemsApiResponse<List<Product>>> getUserCart(token) async {
     try {
       final res = await http.get(Uri.parse('${baseUrl}cart/items'), headers: {
         "Content-type": "application/json",
@@ -16,15 +17,15 @@ class CartService {
       final Map<String, dynamic> jsonRes = await jsonDecode(res.body);
       if (res.statusCode == 200) {
         final List<dynamic> items = jsonRes['cart_items'];
-        List<Product> products = items
-            .map((product) => Product.fromJson(product['product']))
+        List<CartItem> products = items
+            .map((cartItem) => CartItem.fromJson(cartItem))
             .toList()
-            .cast<Product>();
-        return ProductsApiResponse(products: products);
+            .cast<CartItem>();
+        return CartItemsApiResponse(products: products);
       }
-      return ProductsApiResponse(error: 'error getting items');
+      return CartItemsApiResponse(error: 'error getting items');
     } catch (err) {
-      return ProductsApiResponse(error: 'check network connection');
+      return CartItemsApiResponse(error: 'check network connection');
     }
   }
 
@@ -34,15 +35,14 @@ class CartService {
           headers: {
             "Content-type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer ${user_token}",
+            "Authorization": "Bearer $user_token",
           },
           body: jsonEncode({'product_id': product_id, "product_count": 1}));
       if (res.statusCode == 201) {
         return {'message': 'added successfully', 'success': true};
       }
-      return {'error': true, 'message': 'failed to add item to cart'};
+      return {'error': true, 'message': 'item out of stock'};
     } catch (err) {
-      print(err);
       return {
         "error": true,
       };

@@ -16,13 +16,10 @@ class OrderService {
           "Authorization": "Bearer $token",
         },
       );
-      final jsonResponse = jsonDecode(res.body);
-      print(jsonResponse);
-      if (res.statusCode == 201) {
+      if (res.statusCode == 200) {
         final Map<String, dynamic> jsonRes = jsonDecode(res.body);
-        final List<dynamic> productsJson = jsonRes['cart_items'];
-        List<OrderModel> orders = productsJson
-            .map((order) => OrderModel.fromJson(order['product']))
+        List<OrderModel> orders = jsonRes['orders']
+            .map((order) => OrderModel.fromJson(order))
             .toList()
             .cast<OrderModel>();
         return orders;

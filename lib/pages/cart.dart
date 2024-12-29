@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:orders/api/products_api_response.dart';
+import 'package:orders/api/cartItems_api_response.dart';
 import 'package:orders/api/services/cart_service.dart'; // Updated service import
 import 'package:orders/api/services/order_service.dart';
+import 'package:orders/models/CartItem.dart';
 import 'package:orders/models/Product.dart';
 import 'package:orders/models/User.dart';
 import 'package:orders/providers/cart.dart';
@@ -20,7 +21,7 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  late Future<ProductsApiResponse<List<Product>>> _productsFuture;
+  late Future<CartItemsApiResponse<List<Product>>> _productsFuture;
 
   Future<String?> getToken() async {
     var box = Hive.box('myBox'); // Open the box
@@ -29,7 +30,7 @@ class _CartPageState extends State<CartPage> {
   }
 
   // Fetch user cart items
-  Future<ProductsApiResponse<List<Product>>> _fetchUserCart() async {
+  Future<CartItemsApiResponse<List<Product>>> _fetchUserCart() async {
     final cartService = CartService();
     String? token = await getToken();
     return await cartService.getUserCart(token);
@@ -38,20 +39,26 @@ class _CartPageState extends State<CartPage> {
   void _addItem(context, id) async {
     final cs = CartService();
     String? token = await getToken();
-    final res = await cs.removeFromCart(token, id);
-    if (res['success'] != null) {
+    final res = await cs.addProductToCart(token, id);
+    if (res['error'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(res['message'])),
+      );
+      return;
+    } else if (res['success'] != null) {
       setState(() {
         _productsFuture = _productsFuture.then((response) {
           final updateProducts = response.getProducts
               .where((product) => product.id != id)
               .toList()
-              .cast<Product>();
-          return ProductsApiResponse(
+              .cast<CartItem>();
+          return CartItemsApiResponse(
             error: response.error,
             products: updateProducts,
           );
         });
       });
+      _refreshCart();
       // ignore: use_build_context_synchronously
       Provider.of<CartIdsProvider>(context, listen: false).removeId(id);
     }
@@ -67,13 +74,14 @@ class _CartPageState extends State<CartPage> {
           final updateProducts = response.getProducts
               .where((product) => product.id != id)
               .toList()
-              .cast<Product>();
-          return ProductsApiResponse(
+              .cast<CartItem>();
+          return CartItemsApiResponse(
             error: response.error,
             products: updateProducts,
           );
         });
       });
+      _refreshCart();
       // ignore: use_build_context_synchronously
       Provider.of<CartIdsProvider>(context, listen: false).removeId(id);
     }
@@ -91,10 +99,10 @@ class _CartPageState extends State<CartPage> {
     });
   }
 
-  double calculateTotal(List<Product> products) {
+  double calculateTotal(List<CartItem> items) {
     double total = 0;
-    for (var product in products) {
-      total += product.price;
+    for (var item in items) {
+      total += item.count * item.getProduct.price;
     }
     return total;
   }
@@ -124,7 +132,7 @@ class _CartPageState extends State<CartPage> {
       _refreshCart();
       // ignore: empty_catches
     } catch (err) {
-      print(err);
+      return;
     }
   }
 
@@ -135,7 +143,7 @@ class _CartPageState extends State<CartPage> {
         title: const Text("Cart"),
         backgroundColor: Colors.transparent,
       ),
-      body: FutureBuilder<ProductsApiResponse<List<Product>>>(
+      body: FutureBuilder<CartItemsApiResponse<List<Product>>>(
         future: _productsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

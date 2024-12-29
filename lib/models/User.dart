@@ -16,7 +16,7 @@ class User {
       id: json['id'],
       name: json['name'],
       ammount: json['wallet'] ?? 0,
-      isAdmin: json['is_admin'] == true ? 1 : 0,
+      isAdmin: json['is_admin'] == 1 || json['is_admin'] == true ? 1 : 0,
     );
   }
 }

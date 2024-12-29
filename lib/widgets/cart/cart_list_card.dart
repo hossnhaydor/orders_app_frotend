@@ -3,10 +3,12 @@ import 'package:orders/models/Product.dart';
 
 class CartListCard extends StatelessWidget {
   final Product item;
+  final int count;
   final Function(BuildContext, int) removeItem;
   final Function(BuildContext, int) addItem;
   const CartListCard(
       {super.key,
+      required this.count,
       required this.item,
       required this.addItem,
       required this.removeItem});
@@ -37,15 +39,16 @@ class CartListCard extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 15, fontWeight: FontWeight.bold),
                   ),
-                  const Text(
-                    "980",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  Text(
+                    'product price: ${item.price}\$',
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold),
                   ),
-                  const Row(
+                  Row(
                     children: [
                       Text(
-                        "567.9 (1)",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        "item count: $count",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       )
                     ],
                   ),
@@ -60,10 +63,17 @@ class CartListCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               TextButton(
-                                  onPressed: () {}, child: const Text('+')),
-                              const Text('2'),
+                                onPressed: () {
+                                  addItem(context, item.id);
+                                },
+                                child: const Text('+'),
+                              ),
+                              Text("$count"),
                               TextButton(
-                                  onPressed: () {}, child: const Text('-'))
+                                  onPressed: () {
+                                    removeItem(context, item.id);
+                                  },
+                                  child: const Text('-'))
                             ],
                           ),
                         )

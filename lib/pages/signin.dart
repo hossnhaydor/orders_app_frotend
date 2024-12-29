@@ -27,6 +27,7 @@ class _SignInState extends State<SignIn> {
   File? _image;
   String? _password;
   bool loading = false;
+  bool isAdmin = false; // Checkbox state
   Map<String, dynamic> _errors = {
     "email": "",
     "name": "",
@@ -38,9 +39,8 @@ class _SignInState extends State<SignIn> {
     try {
       var box = Hive.box('mybox');
       await box.put('token', token);
-    // ignore: empty_catches
-    } catch (err) {
-    }
+      // ignore: empty_catches
+    } catch (err) {}
   }
 
   void _submit() async {
@@ -60,6 +60,7 @@ class _SignInState extends State<SignIn> {
         _confirmPasswordController.text,
         _phoneController.text,
         _locationController.text,
+        isAdmin, // Send the admin state
       );
       setState(() {
         loading = false;
@@ -72,7 +73,6 @@ class _SignInState extends State<SignIn> {
         }
         throw ();
       }
-      //  res['token'];
       await _storeToken(res['token']);
       // ignore: use_build_context_synchronously
       Provider.of<UserProvider>(context, listen: false).setUser(res['user']);
@@ -84,10 +84,8 @@ class _SignInState extends State<SignIn> {
       setState(() {
         loading = false;
       });
-      // Handle error (e.g., show dialog or snackbar)
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("check your network")),
+        const SnackBar(content: Text("Check your network")),
       );
     }
   }
@@ -186,11 +184,24 @@ class _SignInState extends State<SignIn> {
                     ? 'Enter your location'
                     : null,
               ),
+              Row(
+                children: [
+                  Checkbox(
+                    value: isAdmin,
+                    onChanged: (value) {
+                      setState(() {
+                        isAdmin = value!;
+                      });
+                    },
+                  ),
+                  const Text('Admin'),
+                ],
+              ),
               TextButton(
                 onPressed: () {
                   _pickImage();
                 },
-                child: const Text('pick image'),
+                child: const Text('Pick Image'),
               ),
               _image != null && _image!.path == "nothing"
                   ? Image.file(

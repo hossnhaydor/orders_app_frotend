@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:orders/models/Product.dart';
+import 'package:orders/models/CartItem.dart';
 import 'package:orders/widgets/cart/cart_list_card.dart';
 
 class CartListItems extends StatelessWidget {
-  final List<Product> items;
+  final List<CartItem> items;
   final Function(BuildContext, int) removeItem;
   final Function(BuildContext, int) addItem;
 
@@ -21,7 +21,8 @@ class CartListItems extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (context, i) {
         return CartListCard(
-          item: items[i],
+          item: items[i].product,
+          count: items[i].count,
           removeItem: removeItem,
           addItem: addItem,
         );

@@ -1,6 +1,6 @@
 import 'package:orders/models/Product.dart';
 
-class ProductsApiResponse<T> {
+class ProductsApiResponse<T>{
   final String? error;
   final List<Product>? products;
   ProductsApiResponse({this.error, this.products});

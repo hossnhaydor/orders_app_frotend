@@ -29,7 +29,6 @@ class _OrderState extends State<Order> {
   Future<List<OrderModel>> _fetchUserOrders() async {
     final orderService = OrderService();
     String? token = await getToken();
-    print('getting ordes');
     return await orderService.getOrders(token);
   }
 
@@ -37,6 +36,11 @@ class _OrderState extends State<Order> {
     setState(() {
       _ordersFuture = _fetchUserOrders();
     });
+  }
+
+  String convertToLocalDate(String isoDate) {
+    DateTime parsedDate = DateTime.parse(isoDate);
+    return parsedDate.toLocal().toString(); // Display the local datetime
   }
 
   @override
@@ -59,45 +63,51 @@ class _OrderState extends State<Order> {
               message: "Something went wrong. Please try again.",
               retry: _refreshOrders,
             );
-          } else if (snapshot.hasError) {
-            return RetryButton(
-              message: snapshot.error.toString(),
-              retry: _refreshOrders,
-            );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text("No orders to show."));
           } else {
             final orders = snapshot.data;
             return Padding(
               padding: const EdgeInsets.all(4.0),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 60.0),
-                child: ListView.builder(
-                  itemCount: orders!.length,
-                  itemBuilder: (context, i) {
-                    return Card(
-                      child: ListTile(
-                        title: Center(child: Text(orders[i].toString())),
-                        subtitle: Column(
-                          children: [
-                            Text(orders[i].toString()),
-                            Text(orders[i].toString())
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                                onPressed: () {}, icon: const Icon(Icons.edit)),
-                            IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.delete))
-                          ],
-                        ),
+              child: ListView.builder(
+                itemCount: orders!.length,
+                itemBuilder: (context, i) {
+                  OrderModel order = orders[i];
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment
+                                .start, // Align text to the left
+                            children: [
+                              Text(
+                                "Price: ${order.totalAmount}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Ordered at: ${convertToLocalDate(order.getDate)}",
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.delete),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             );
           }

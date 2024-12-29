@@ -113,15 +113,18 @@ class UserPage extends StatelessWidget {
                           MaterialPageRoute(builder: (_) => const Order()),
                         ),
                       ),
-                      buildButton(
-                        context: context,
-                        text: "Admin",
-                        icon: Icons.admin_panel_settings,
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const AdminPage()),
-                        ),
-                      ),
+                      user.isAdmin == 1
+                          ? buildButton(
+                              context: context,
+                              text: "Admin",
+                              icon: Icons.admin_panel_settings,
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const AdminPage()),
+                              ),
+                            )
+                          : const SizedBox(),
                       buildButton(
                         context: context,
                         text: "Wallet",
