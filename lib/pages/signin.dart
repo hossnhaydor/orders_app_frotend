@@ -203,7 +203,7 @@ class _SignInState extends State<SignIn> {
                 },
                 child: const Text('Pick Image'),
               ),
-              _image != null && _image!.path == "nothing"
+              _image != null
                   ? Image.file(
                       _image!,
                       height: 200,
@@ -320,6 +320,7 @@ class _SignInState extends State<SignIn> {
       setState(() {
         _image = File(image!.path);
       });
+      print("no image error");
       print(image!.path);
     } catch (err) {
       print(err);
