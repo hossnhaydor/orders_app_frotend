@@ -1,7 +1,7 @@
 class Product {
   final int id;
   final String name;
-  final double price;
+  final  int price;
   final double rating;
   Product(
       {required this.id,

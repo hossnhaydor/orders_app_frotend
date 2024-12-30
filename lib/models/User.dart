@@ -15,7 +15,7 @@ class User {
       phone: "${json['phone_number']}",
       id: json['id'],
       name: json['name'],
-      ammount: json['wallet'] ?? 0,
+      ammount:  json['wallet'] != null ? double.parse("${json['wallet']}") : 0.0,
       isAdmin: json['is_admin'] == 1 || json['is_admin'] == true ? 1 : 0,
     );
   }

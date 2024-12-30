@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../../models/User.dart';
 
 class AuthService {
-  final String baseUrl = "http://127.0.0.1:8000/api/";
+  final String baseUrl = "http://192.168.137.1:8000/api/";
   Future<Map<String, dynamic>> register(name, password, passwordConfirmation,
       phoneNumber, location, isAdmin) async {
     try {
@@ -78,6 +78,7 @@ class AuthService {
       };
     } catch (err) {
       print(err);
+      print("login error");
       return {"error": true, "user": null};
     }
   }

@@ -6,7 +6,7 @@ import 'package:orders/models/CartItem.dart';
 import 'package:orders/models/Product.dart';
 
 class CartService {
-  final String baseUrl = "http://127.0.0.1:8000/api/";
+  final String baseUrl = "http://192.168.137.1:8000/api/";
   Future<CartItemsApiResponse<List<Product>>> getUserCart(token) async {
     try {
       final res = await http.get(Uri.parse('${baseUrl}cart/items'), headers: {

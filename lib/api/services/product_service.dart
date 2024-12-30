@@ -5,7 +5,7 @@ import 'package:orders/api/products_api_response.dart';
 import 'package:orders/models/Product.dart';
 
 class ProductServices {
-  final String baseUrl = "http://127.0.0.1:8000/api/";
+  final String baseUrl = "http://192.168.137.1:8000/api/";
   Future<ProductsApiResponse<List<Product>>> getProducts() async {
     try {
       final res = await http.get(Uri.parse('${baseUrl}products'));
