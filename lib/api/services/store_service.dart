@@ -153,4 +153,37 @@ class StoreService {
       return {};
     }
   }
+
+  Future<Map<String, dynamic>> deleteStore(token, id) async {
+    try {
+      final res = await http.delete(
+        Uri.parse('${Server.baseUrl}store/${id}'),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      Map<String, dynamic> jsonRes = await jsonDecode(res.body);
+      print(jsonRes);
+      if (res.statusCode == 404) {
+        return {
+          'meesage': 'failed',
+          'error': 'store not found',
+        };
+      }
+      if (res.statusCode == 200) {
+        return {
+          "message": 'Store deleted successfully',
+        };
+      }
+      return {
+        "message": "deleting store failed",
+        "error": 'something went wrong',
+      };
+    } catch (err) {
+      print(err);
+      return {};
+    }
+  }
 }

@@ -203,4 +203,36 @@ class ProductServices {
     }
   }
 
+  Future<Map<String, dynamic>> deleteProduct(token, id) async {
+    try {
+      final res = await http.delete(
+        Uri.parse('${Server.baseUrl}products/${id}'),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      Map<String, dynamic> jsonRes = await jsonDecode(res.body);
+      print(jsonRes);
+      if (res.statusCode == 404) {
+        return {
+          'meesage': 'failed',
+          'error': 'product not found',
+        };
+      }
+      if (res.statusCode == 200) {
+        return {
+          "message": 'product deleted successfully',
+        };
+      }
+      return {
+        "message": "deleting product failed",
+        "error": 'something went wrong',
+      };
+    } catch (err) {
+      print(err);
+      return {};
+    }
+  }
 }
