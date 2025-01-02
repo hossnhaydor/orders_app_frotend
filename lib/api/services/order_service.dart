@@ -44,8 +44,6 @@ class OrderService {
           "Authorization": "Bearer $token",
         },
       );
-      final jsonResponse = jsonDecode(res.body);
-      print(res.body);
       if (res.statusCode == 201) {
         return [];
       }
@@ -68,7 +66,6 @@ class OrderService {
           "Authorization": "Bearer $token",
         },
       );
-      final jsonResponse = jsonDecode(res.body);
       if (res.statusCode == 201) {
         return {'success': true};
       }
