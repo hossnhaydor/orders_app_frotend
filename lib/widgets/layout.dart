@@ -31,7 +31,6 @@ class _LayoutState extends State<Layout> {
   Future<String?> getToken() async {
     var box = Hive.box('myBox'); // Open the box
     String? token = box.get('token'); // Retrieve the token with the key 'token'
-    print('Token retrieved: $token');
     return token;
   }
 

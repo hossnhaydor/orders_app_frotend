@@ -3,8 +3,8 @@ import 'package:orders/pages/product_info.dart';
 import 'package:orders/pages/store_page.dart';
 
 class SearchList extends StatefulWidget {
-  final stores;
-  final products;
+  final List stores;
+  final List products;
   final Function(BuildContext, dynamic item) click;
   const SearchList({
     super.key,
@@ -26,47 +26,56 @@ class _SearchListState extends State<SearchList> {
       children: [
         !showStores
             ? Expanded(
-                child: ListView.builder(
-                  itemCount: widget.products.length,
-                  itemBuilder: (context, index) {
-                    final item = widget.products[index];
-                    return ListTile(
-                      title: Text(item.name), // Use appropriate field
-                      onTap: () {
-                        // widget.click(context, item);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Productinfo(product: item),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
+                child: widget.products.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: widget.products.length,
+                        itemBuilder: (context, index) {
+                          final item = widget.products[index];
+                          return ListTile(
+                            title: Text(item.name), // Use appropriate field
+                            onTap: () {
+                              // widget.click(context, item);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      Productinfo(id: item.id),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      )
+                    : const Center(
+                        child: Text('no products found'),
+                      ),
               )
             : Expanded(
-                child: ListView.builder(
-                  itemCount: widget.stores.length,
-                  itemBuilder: (context, index) {
-                    final item = widget.stores[index];
-                    return ListTile(
-                      title: Text(item.name), // Use appropriate field
-                      onTap: () {
-                        // widget.click(context, item);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => StorePage(
-                              storeId: item.id,
-                              storeName: item.name,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
+                child: widget.stores.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: widget.stores.length,
+                        itemBuilder: (context, index) {
+                          final item = widget.stores[index];
+                          return ListTile(
+                            title: Text(item.name), // Use appropriate field
+                            onTap: () {
+                              // widget.click(context, item);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StorePage(
+                                    storeId: item.id,
+                                    storeName: item.name,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      )
+                    : const Center(
+                        child: Text('no stores found'),
+                      ),
               ),
         Padding(
           padding: const EdgeInsets.all(8.0),

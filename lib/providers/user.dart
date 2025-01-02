@@ -30,6 +30,11 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void decrement(double ammount) {
+    _user!.ammount -= ammount;
+    notifyListeners();
+  }
+
   Future<bool> getUserByToken(String token) async {
     try {
       AuthService auth = AuthService();

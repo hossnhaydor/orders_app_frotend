@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:orders/api/services/server.dart';
 import 'package:orders/models/Order.dart';
 
 class OrderService {
-  final String baseUrl = "http://192.168.137.1:8000/api/";
+  final String baseUrl = Server.baseUrl;
 
   Future<List<OrderModel>> getOrders(token) async {
     try {

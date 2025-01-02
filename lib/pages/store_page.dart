@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:orders/widgets/store/store_products.dart';
 
 class StorePage extends StatefulWidget {
-  final storeId;
-  final storeName;
+  final int storeId;
+  final String storeName;
   const StorePage({super.key, required this.storeId, required this.storeName});
 
   @override

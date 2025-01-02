@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:orders/models/User.dart';
 import 'package:orders/pages/cart.dart';
 import 'package:orders/pages/signup.dart';
 import 'package:orders/providers/user.dart';
-import 'package:orders/widgets/home/products_list.dart';
 import 'package:orders/widgets/home/search_delegate.dart';
+import 'package:orders/widgets/store/stores_list.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,7 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context).user;
+    User? user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -58,7 +59,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: const Center(
-        child: ProductsList(),
+        child: StoresList(),
       ),
     );
   }

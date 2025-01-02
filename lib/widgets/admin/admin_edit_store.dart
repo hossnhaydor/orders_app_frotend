@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:orders/api/services/store_service.dart';
 
-class AdminAddStore extends StatefulWidget {
-  const AdminAddStore({super.key});
+class AdminEditStore extends StatefulWidget {
+  const AdminEditStore({super.key});
   @override
-  State<AdminAddStore> createState() => _AdminAddStoreState();
+  State<AdminEditStore> createState() => _AdminEditStoreState();
 }
 
-class _AdminAddStoreState extends State<AdminAddStore> {
+class _AdminEditStoreState extends State<AdminEditStore> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _idController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _location = TextEditingController();
   final TextEditingController _type = TextEditingController();
@@ -36,8 +37,9 @@ class _AdminAddStoreState extends State<AdminAddStore> {
         loading = true;
         _errors = {};
       });
-      final res = await storeService.addStore(
+      final res = await storeService.editStore(
         token,
+        _idController.text,
         _nameController.text,
         _location.text,
         _type.text,
@@ -57,7 +59,7 @@ class _AdminAddStoreState extends State<AdminAddStore> {
         throw ();
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Store added successfully")),
+        const SnackBar(content: Text("Store edited successfully")),
       );
     } catch (e) {
       setState(() {
@@ -108,7 +110,7 @@ class _AdminAddStoreState extends State<AdminAddStore> {
           child: Column(
             children: [
               const Text(
-                'Add Store',
+                'Edit Store',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -117,43 +119,35 @@ class _AdminAddStoreState extends State<AdminAddStore> {
               ),
               const SizedBox(height: 20),
               _buildTextField(
+                controller: _idController,
+                error: _errors['id'],
+                label: "Store Id",
+              ),
+              _buildTextField(
                 controller: _nameController,
                 error: _errors['name'],
                 label: "Name",
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter Store Name' : null,
               ),
               _buildTextField(
                 controller: _location,
                 error: _errors['location'],
                 label: "location",
                 keyboardType: TextInputType.phone,
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Enter Store Location'
-                    : null,
               ),
               _buildTextField(
                 controller: _type,
                 error: _errors['type'],
                 label: "type",
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter Store type' : null,
               ),
               _buildTextField(
                 controller: _number,
                 error: _errors['number'],
                 label: "number",
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Enter Store number'
-                    : null,
               ),
               _buildTextField(
                 controller: _description,
                 error: _errors['description'],
                 label: "description",
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Enter Store Description'
-                    : null,
               ),
               _buildTextField(
                 controller: _image_url,

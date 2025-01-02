@@ -6,7 +6,7 @@ class ListW extends StatelessWidget {
   final List<Product> prodcuts;
   const ListW({super.key, required this.prodcuts});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return ListView.builder(
       itemCount: prodcuts.length,
       itemBuilder: (context, i) {

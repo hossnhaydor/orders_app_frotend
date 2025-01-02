@@ -5,7 +5,6 @@ import 'package:orders/api/services/cart_service.dart'; // Updated service impor
 import 'package:orders/api/services/order_service.dart';
 import 'package:orders/models/CartItem.dart';
 import 'package:orders/models/Product.dart';
-import 'package:orders/models/User.dart';
 import 'package:orders/providers/cart.dart';
 import 'package:orders/providers/token.dart';
 import 'package:orders/providers/user.dart';
@@ -120,9 +119,7 @@ class _CartPageState extends State<CartPage> {
         );
         throw ();
       }
-      User? user = Provider.of<UserProvider>(context, listen: false).user;
-      Provider.of<UserProvider>(context, listen: false)
-          .increaseAmmount(user!.ammount - total);
+      Provider.of<UserProvider>(context, listen: false).decrement(total);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('order created successfully'),

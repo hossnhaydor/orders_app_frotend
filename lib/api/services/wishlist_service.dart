@@ -3,10 +3,11 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:orders/api/products_api_response.dart';
+import 'package:orders/api/services/server.dart';
 import 'package:orders/models/Product.dart';
 
 class WishlistService {
-  final String baseUrl = "http://192.168.137.1:8000/api/";
+  final String baseUrl = Server.baseUrl;
 
   Future<ProductsApiResponse<List<Product>>> getUserWishlist(token) async {
     try {

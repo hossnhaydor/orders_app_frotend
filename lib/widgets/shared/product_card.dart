@@ -3,6 +3,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:orders/api/services/wishlist_service.dart';
 import 'package:orders/models/Product.dart';
 import 'package:orders/pages/product_info.dart';
+import 'package:orders/pages/signin.dart';
 import 'package:orders/providers/wlist_ids.dart';
 import 'package:provider/provider.dart';
 
@@ -16,9 +17,22 @@ class ProductCard extends StatelessWidget {
     return token;
   }
 
+  void navigate(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SignIn(),
+      ),
+    );
+  }
+
   void addToWishList(BuildContext context) async {
     final ws = WishlistService();
     String? token = await getToken();
+    if (token == null) {
+      navigate(context);
+      return;
+    }
     final res = await ws.addProductToWishlist(token, p.id);
     if (res['success'] != null) {
       // ignore: use_build_context_synchronously
@@ -29,6 +43,10 @@ class ProductCard extends StatelessWidget {
   void removeFromWishList(BuildContext context) async {
     final ws = WishlistService();
     String? token = await getToken();
+    if (token == null) {
+      navigate(context);
+      return;
+    }
     final res = await ws.removeFromWishlist(token, p.id);
     if (res['success'] != null) {
       // ignore: use_build_context_synchronously
@@ -60,7 +78,7 @@ class ProductCard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Productinfo(product: p),
+                          builder: (context) => Productinfo(id: p.id),
                         ),
                       );
                     },
@@ -90,7 +108,7 @@ class ProductCard extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Productinfo(product: p),
+                    builder: (context) => Productinfo(id: p.id),
                   ),
                 );
               },

@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:orders/api/services/store_service.dart';
+import 'package:orders/api/services/product_service.dart';
 
-class AdminAddStore extends StatefulWidget {
-  const AdminAddStore({super.key});
+class AdminEditProduct extends StatefulWidget {
+  const AdminEditProduct({super.key});
+
   @override
-  State<AdminAddStore> createState() => _AdminAddStoreState();
+  State<AdminEditProduct> createState() => _AdminAddProductState();
 }
 
-class _AdminAddStoreState extends State<AdminAddStore> {
+class _AdminAddProductState extends State<AdminEditProduct> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _idController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _location = TextEditingController();
-  final TextEditingController _type = TextEditingController();
+  final TextEditingController _price = TextEditingController();
   final TextEditingController _description = TextEditingController();
-  final TextEditingController _number = TextEditingController();
+  final TextEditingController _stock = TextEditingController();
   final TextEditingController _image_url = TextEditingController();
 
   bool loading = false;
@@ -30,18 +31,18 @@ class _AdminAddStoreState extends State<AdminAddStore> {
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
     String? token = await getToken();
-    final storeService = StoreService();
+    final ProductService = ProductServices();
     try {
       setState(() {
         loading = true;
         _errors = {};
       });
-      final res = await storeService.addStore(
+      final res = await ProductService.editProduct(
         token,
+        _idController.text,
         _nameController.text,
-        _location.text,
-        _type.text,
-        _number.text,
+        _stock.text,
+        _price.text,
         _description.text,
         _image_url.text, // Send the admin state
       );
@@ -53,11 +54,12 @@ class _AdminAddStoreState extends State<AdminAddStore> {
           setState(() {
             _errors = res['errors'];
           });
+          return;
         }
         throw ();
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Store added successfully")),
+        const SnackBar(content: Text("Product edited successfully")),
       );
     } catch (e) {
       setState(() {
@@ -72,9 +74,7 @@ class _AdminAddStoreState extends State<AdminAddStore> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: const [],
-      ),
+      appBar: AppBar(actions: const []),
       backgroundColor: Colors.white,
       body: Stack(
         children: [
@@ -108,7 +108,7 @@ class _AdminAddStoreState extends State<AdminAddStore> {
           child: Column(
             children: [
               const Text(
-                'Add Store',
+                'Edit Product',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -117,43 +117,29 @@ class _AdminAddStoreState extends State<AdminAddStore> {
               ),
               const SizedBox(height: 20),
               _buildTextField(
+                controller: _idController,
+                error: _errors['id'],
+                label: "Product Id",
+              ),
+              _buildTextField(
                 controller: _nameController,
                 error: _errors['name'],
                 label: "Name",
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter Store Name' : null,
               ),
               _buildTextField(
-                controller: _location,
-                error: _errors['location'],
-                label: "location",
-                keyboardType: TextInputType.phone,
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Enter Store Location'
-                    : null,
+                controller: _price,
+                error: _errors['price'],
+                label: "Price",
               ),
               _buildTextField(
-                controller: _type,
-                error: _errors['type'],
-                label: "type",
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter Store type' : null,
-              ),
-              _buildTextField(
-                controller: _number,
-                error: _errors['number'],
-                label: "number",
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Enter Store number'
-                    : null,
+                controller: _stock,
+                error: _errors['stock'],
+                label: "Stock",
               ),
               _buildTextField(
                 controller: _description,
                 error: _errors['description'],
                 label: "description",
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Enter Store Description'
-                    : null,
               ),
               _buildTextField(
                 controller: _image_url,
@@ -230,7 +216,7 @@ class _AdminAddStoreState extends State<AdminAddStore> {
           ),
         ),
         child: const Text(
-          'Add Store',
+          'Product Edited',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),

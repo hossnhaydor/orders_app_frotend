@@ -15,14 +15,14 @@ class User {
       phone: "${json['phone_number']}",
       id: json['id'],
       name: json['name'],
-      ammount:  json['wallet'] != null ? double.parse("${json['wallet']}") : 0.0,
+      ammount: json['wallet'] != null ? double.parse("${json['wallet']}") : 0.0,
       isAdmin: json['is_admin'] == 1 || json['is_admin'] == true ? 1 : 0,
     );
   }
 }
 
 class AuthResponse {
-  final User user;
+  final User? user;
   final String token;
 
   AuthResponse({required this.user, required this.token});
