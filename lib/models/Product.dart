@@ -15,11 +15,12 @@ class Product {
   });
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-        id: json['id'],
-        price: json['price'],
-        rating: json['rating'],
-        name: json['name'],
-        storeId: json['store_id'],
-        storeName: json['store']['name']);
+      id: json['id'],
+      price: json['price'],
+      rating: json['rating'],
+      name: json['name'],
+      storeId: json['store_id'],
+      storeName: "store name",
+    );
   }
 }

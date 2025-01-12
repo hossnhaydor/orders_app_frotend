@@ -21,10 +21,24 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   late Future<CartItemsApiResponse<List<Product>>> _productsFuture;
+  List<CartItem> _localProducts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _productsFuture = _fetchUserCart();
+    _productsFuture.then((res) {
+      if (!res.hasError) {
+        setState(() {
+          _localProducts = res.getProducts;
+        });
+      }
+    });
+  }
 
   Future<String?> getToken() async {
-    var box = Hive.box('myBox'); // Open the box
-    String? token = box.get('token'); // Retrieve the token with the key 'token'
+    var box = Hive.box('myBox');
+    String? token = box.get('token');
     return token;
   }
 
@@ -46,50 +60,56 @@ class _CartPageState extends State<CartPage> {
       return;
     } else if (res['success'] != null) {
       setState(() {
-        _productsFuture = _productsFuture.then((response) {
-          final updateProducts = response.getProducts
-              .where((product) => product.id != id)
-              .toList()
-              .cast<CartItem>();
-          return CartItemsApiResponse(
-            error: response.error,
-            products: updateProducts,
-          );
-        });
+        _localProducts = _localProducts
+            .map((item) {
+              if (item.product.id == id) {
+                item.count += 1;
+              }
+              return item;
+            })
+            .cast<CartItem>()
+            .toList();
       });
-      _refreshCart();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('item added successfully'),
+        ),
+      );
       // ignore: use_build_context_synchronously
       Provider.of<CartIdsProvider>(context, listen: false).removeId(id);
     }
   }
 
-  void _removeItem(context, id) async {
+  void _removeItem(context, id, count) async {
     final cs = CartService();
     String? token = await getToken();
     final res = await cs.removeFromCart(token, id);
     if (res['success'] != null) {
-      setState(() {
-        _productsFuture = _productsFuture.then((response) {
-          final updateProducts = response.getProducts
-              .where((product) => product.id != id)
-              .toList()
-              .cast<CartItem>();
-          return CartItemsApiResponse(
-            error: response.error,
-            products: updateProducts,
-          );
+      if (count == 1) {
+        _localProducts.removeWhere((item) => item.product.id == id);
+      } else {
+        setState(() {
+          _localProducts = _localProducts
+              .map((item) {
+                print("${item.product.id} ${id}");
+                if (item.product.id == id) {
+                  item.count -= 1;
+                }
+                return item;
+              })
+              .cast<CartItem>()
+              .toList();
         });
-      });
-      _refreshCart();
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('item removed successfully'),
+        ),
+      );
       // ignore: use_build_context_synchronously
       Provider.of<CartIdsProvider>(context, listen: false).removeId(id);
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _productsFuture = _fetchUserCart();
   }
 
   void _refreshCart() {
@@ -143,29 +163,34 @@ class _CartPageState extends State<CartPage> {
       body: FutureBuilder<CartItemsApiResponse<List<Product>>>(
         future: _productsFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              _localProducts.isEmpty) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
+          } else if (snapshot.hasError && _localProducts.isEmpty) {
             return RetryButton(
               message: "Something went wrong. Please try again.",
               retry: _refreshCart,
             );
-          } else if (snapshot.hasData && snapshot.data!.hasError) {
+          } else if (snapshot.hasData &&
+              snapshot.data!.hasError &&
+              _localProducts.isEmpty) {
             return RetryButton(
               message: snapshot.data!.getError,
               retry: _refreshCart,
             );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData ||
+              snapshot.data!.isEmpty ||
+              _localProducts.isEmpty) {
             return const Center(child: Text("No products to show."));
           } else {
-            double total = calculateTotal(snapshot.data!.getProducts);
+            double total = calculateTotal(_localProducts);
             return Padding(
               padding: const EdgeInsets.all(4.0),
               child: Stack(children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 60.0),
                   child: CartListItems(
-                    items: snapshot.data!.getProducts,
+                    items: _localProducts,
                     removeItem: _removeItem,
                     addItem: _addItem,
                   ),

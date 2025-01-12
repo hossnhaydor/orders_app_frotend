@@ -14,11 +14,12 @@ class Store {
       required this.description});
   factory Store.fromJson(Map<String, dynamic> json) {
     return Store(
-        name: json['name'],
-        id: json['id'],
-        location: json['location'],
-        type: json['type'],
-        number: "${json['number']}",
-        description: json['description']);
+      name: json['name'],
+      id: json['id'],
+      location: json['location'],
+      type: json['type'],
+      number: "${json['number']}",
+      description: json['description'],
+    );
   }
 }

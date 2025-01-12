@@ -2,7 +2,7 @@ import 'package:orders/models/Product.dart';
 
 class CartItem {
   final int id;
-  final int count;
+  int count;
   final Product product;
 
   Product get getProduct => product;

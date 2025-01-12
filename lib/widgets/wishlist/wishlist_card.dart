@@ -12,57 +12,54 @@ class WishListCard extends StatelessWidget {
       child: Container(
         height: 150,
         margin: const EdgeInsets.all(10),
-        child: Row(
+        child: Stack(
           children: [
-            Container(
-              height: 120,
-              width: 130,
-              margin: const EdgeInsets.only(right: 10),
-              decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: const BorderRadius.all(Radius.circular(20))),
-            ),
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                //  mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Padding(padding: EdgeInsets.all(6)),
-                  Text(
-                    item.name,
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                SizedBox(
+                  width: 150,
+                  height: 150,
+                  child: Image.network(
+                    'https://images.squarespace-cdn.com/content/v1/59da11e98419c28f51bab499/1550098469650-ZZ3JVUW5MOSE2BUQWO8J/1182_0027.jpg?format=750w',
+                    height: double.infinity,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
                   ),
-                  const Text(
-                    "980",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  const Row(
-                    children: [
-                      Text(
-                        "567.9 (1)",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 76,
-                    width: 170,
-                    child: Stack(
-                      alignment: Alignment.bottomRight,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //  mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Positioned(
-                          child: IconButton(
-                              onPressed: () {
-                                removeItem(context, item.id);
-                              },
-                              icon: const Icon(
-                                Icons.cancel_outlined,
-                              )),
-                        )
-                      ],
-                    ),
+                        Text(
+                          item.name,
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'product price: ${item.price}\$',
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                      ]),
+                )
+              ],
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      removeItem(context, item.id);
+                    },
+                    icon: const Icon(Icons.delete),
                   )
-                ])
+                ],
+              ),
+            )
           ],
         ),
       ),

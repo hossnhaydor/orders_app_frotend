@@ -16,6 +16,7 @@ class CartService {
         "Authorization": "Bearer ${token}",
       });
       final Map<String, dynamic> jsonRes = await jsonDecode(res.body);
+      print(jsonRes);
       if (res.statusCode == 200) {
         final List<dynamic> items = jsonRes['cart_items'];
         List<CartItem> products = items
@@ -26,6 +27,8 @@ class CartService {
       }
       return CartItemsApiResponse(error: 'error getting items');
     } catch (err) {
+      print('carttt error');
+      print(err);
       return CartItemsApiResponse(error: 'check network connection');
     }
   }
