@@ -2,34 +2,35 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:orders/api/services/server.dart';
-import 'package:orders/models/Order.dart';
+import 'package:orders/models/Notification.dart';
 
-class OrderService {
+class NotificationService {
   final String baseUrl = Server.baseUrl;
 
-  Future<List<OrderModel>> getOrders(token) async {
+  Future<List<NotificationModel>> getNotificaiotns(token) async {
     try {
       var res = await http.get(
-        Uri.parse("${baseUrl}order/view"),
+        Uri.parse("${baseUrl}notifications/show"),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
           "Authorization": "Bearer $token",
         },
       );
+      final Map<String, dynamic> jsonRes = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        final Map<String, dynamic> jsonRes = jsonDecode(res.body);
-        List<OrderModel> orders = jsonRes['orders']
-            .map((order) => OrderModel.fromJson(order))
+        List<NotificationModel> notifications = jsonRes['notifications']
+            .map((item) => NotificationModel.fromJson(item))
             .toList()
-            .cast<OrderModel>();
-        return orders;
+            .cast<NotificationModel>();
+        return notifications;
       }
       if (res.statusCode == 400) {
         return [];
       }
       return [];
     } catch (err) {
+      print(err);
       return [];
     }
   }
