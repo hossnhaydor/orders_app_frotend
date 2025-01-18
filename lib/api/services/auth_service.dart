@@ -108,26 +108,51 @@ class AuthService {
     });
   }
 
-  Future<dynamic> changeUserInfo(token, name, phone, location) async {
-    final res = await http.post(
-      Uri.parse("${baseUrl}user/changeInfo"),
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer $token",
-      },
-      body: jsonEncode({
-        "name": name,
-        "phone_number": phone,
-        "Location": location,
-      }),
-    );
-    final jsonRes = jsonDecode(res.body);
-    if (res.statusCode == 200) {
-      User user = User.fromJson(jsonRes);
-      return user;
+  Future<Map<String, dynamic>> changeUserInfo(token, name, phone, location) async {
+    try {
+      final res = await http.post(
+        Uri.parse("${baseUrl}user/changeInfo"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode({
+          "name": name,
+          "phone_number": phone,
+          "Location": location,
+        }),
+      );
+      final jsonRes = jsonDecode(res.body);
+      if (res.statusCode == 200) {
+        User user = User.fromJson(jsonRes['data']);
+        return {'user': user};
+      }
+      final errors = jsonRes['errors'] ?? {};
+      return {
+        "message": "Register faild",
+        "error": true,
+        'errors': {
+          "phone": (errors['phone_number'] != null && errors['phone_number'] is List)
+              ? errors['phone_number'][0]
+              : "",
+          "name": (errors['name'] != null && errors['name'] is List)
+              ? errors['name'][0]
+              : "",
+          "password": (errors['password'] != null && errors['password'] is List)
+              ? errors['password'][0]
+              : "",
+          "location": (errors['location'] != null && errors['location'] is List)
+              ? errors['location'][0]
+              : "",
+        },
+        "user": null
+      };
+    }catch(e){
+      print('getting erorr');
+      print(e);
+      return {"error": true, "user": null};
     }
-    return null;
   }
 
   Future<Map<String, dynamic>> addToWallet(token, amount, password) async {

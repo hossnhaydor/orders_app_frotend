@@ -32,6 +32,7 @@ class ProductServices {
       final res =
           await http.get(Uri.parse('${baseUrl}store/products/$storeId'));
       final Map<String, dynamic> jsonRes = jsonDecode(res.body);
+      print(jsonRes);
       if (res.statusCode == 200) {
         final List<dynamic> productsJson = jsonRes['products'];
         List<Product> products = productsJson
@@ -42,6 +43,7 @@ class ProductServices {
       }
       return ProductsApiResponse(products: []);
     } catch (err) {
+      print(err);
       return ProductsApiResponse(error: 'check network connection');
     }
   }

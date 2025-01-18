@@ -84,7 +84,9 @@ class UserPage extends StatelessWidget {
                     children: [
                       const CircleAvatar(
                         radius: 50,
-                        backgroundImage: AssetImage("images/zz.jpg"),
+                        backgroundImage: NetworkImage(
+                          'https://static.vecteezy.com/system/resources/previews/005/129/844/non_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg',
+                        ),
                       ),
                       const SizedBox(height: 20),
                       Text(

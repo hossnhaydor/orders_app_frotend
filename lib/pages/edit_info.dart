@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:orders/api/services/auth_service.dart';
 import 'package:orders/providers/user.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +20,16 @@ class _EditInfoState extends State<EditInfo> {
   bool loading = false;
   Map<String, dynamic> _errors = {"name": "", "phone": "", "location": ""};
 
+  Future<String?> getToken() async {
+    var box = Hive.box('myBox');
+    String? token = box.get('token');
+    return token;
+  }
+
+
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
-
+    final token =  await getToken();
     final apiService = AuthService();
     try {
       setState(() {
@@ -31,11 +39,12 @@ class _EditInfoState extends State<EditInfo> {
         };
       });
       final res = await apiService.changeUserInfo(
-        "token",
+        token,
         _nameController.text,
         _phoneController.text,
         _locationController.text,
       );
+      print(res['error']);
       setState(() {
         loading = false;
       });
@@ -45,7 +54,15 @@ class _EditInfoState extends State<EditInfo> {
             _errors = res['errors'];
           });
         }
-        throw ();
+        setState(() {
+          loading = false;
+        });
+        // Handle error (e.g., show dialog or snackbar)
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("check your network")),
+        );
+        return;
       }
       // print(res['token']);
 
@@ -54,6 +71,7 @@ class _EditInfoState extends State<EditInfo> {
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {
+      print(e);
       setState(() {
         loading = false;
       });

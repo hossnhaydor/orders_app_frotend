@@ -4,7 +4,7 @@ import 'package:orders/widgets/cart/cart_list_card.dart';
 
 class CartListItems extends StatelessWidget {
   final List<CartItem> items;
-  final Function(BuildContext, int) removeItem;
+  final Function(BuildContext, int, int) removeItem;
   final Function(BuildContext, int) addItem;
 
   const CartListItems({

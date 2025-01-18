@@ -30,7 +30,7 @@ class StoreCard extends StatelessWidget {
                 width: 100,
                 height: 100,
                 child: Image.network(
-                  'https://images.squarespace-cdn.com/content/v1/59da11e98419c28f51bab499/1550098469650-ZZ3JVUW5MOSE2BUQWO8J/1182_0027.jpg?format=750w',
+                  store.image,
                   height: double.infinity,
                   width: double.infinity,
                   fit: BoxFit.cover,

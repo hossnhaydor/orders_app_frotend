@@ -83,7 +83,7 @@ class ProductCard extends StatelessWidget {
                       );
                     },
                     child: Image.network(
-                      'https://images.squarespace-cdn.com/content/v1/59da11e98419c28f51bab499/1550098469650-ZZ3JVUW5MOSE2BUQWO8J/1182_0027.jpg?format=750w',
+                      p.image,
                       height: 170,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -117,7 +117,15 @@ class ProductCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(p.name, style: const TextStyle(fontSize: 16)),
+                    Container(
+                      width: 200,
+                      child: Text(
+                        p.name,
+                        style: const TextStyle(fontSize: 16),
+                        overflow: TextOverflow.ellipsis,  // Adds '...' if the text is too long
+                        maxLines: 2,  // Ensures the text stays within one line
+                      ),
+                    ),
                     Text("price:${p.price}",
                         style: const TextStyle(fontSize: 14)),
                   ],

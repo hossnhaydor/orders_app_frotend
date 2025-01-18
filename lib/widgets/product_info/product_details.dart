@@ -104,7 +104,7 @@ class ProductDetails extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: Image.network(
-                      'https://images.squarespace-cdn.com/content/v1/59da11e98419c28f51bab499/1550098469650-ZZ3JVUW5MOSE2BUQWO8J/1182_0027.jpg?format=750w',
+                      product.image,
                     ),
                   ),
                   Padding(

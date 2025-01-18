@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orders/models/User.dart';
 import 'package:orders/pages/cart.dart';
+import 'package:orders/pages/notifications.dart';
 import 'package:orders/pages/signup.dart';
 import 'package:orders/providers/user.dart';
 import 'package:orders/widgets/home/search_delegate.dart';
@@ -24,10 +25,18 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         centerTitle: true,
         title: user != null ? Text(user.name) : const Text("Orders App"),
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.notifications_none),
-        ),
+        leading: user != null
+            ? IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const Notifications()),
+            );
+          },
+          icon: const Icon(Icons.notifications_none_outlined),
+        )
+            : const Text(''),
         actions: [
           IconButton(
             onPressed: () {
@@ -37,25 +46,25 @@ class _HomePageState extends State<HomePage> {
           ),
           user != null
               ? IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const CartPage()),
-                    );
-                  },
-                  icon: const Icon(Icons.shopping_bag_outlined),
-                )
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CartPage()),
+              );
+            },
+            icon: const Icon(Icons.shopping_bag_outlined),
+          )
               : IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SignUp(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.login_outlined),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SignUp(),
                 ),
+              );
+            },
+            icon: const Icon(Icons.login_outlined),
+          ),
         ],
       ),
       body: const Center(

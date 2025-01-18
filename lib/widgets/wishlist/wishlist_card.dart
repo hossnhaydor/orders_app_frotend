@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orders/models/Product.dart';
+import 'package:orders/pages/product_info.dart';
 
 class WishListCard extends StatelessWidget {
   final Product item;
@@ -12,57 +13,68 @@ class WishListCard extends StatelessWidget {
       child: Container(
         height: 150,
         margin: const EdgeInsets.all(10),
-        child: Row(
+        child: Stack(
           children: [
-            Container(
-              height: 120,
-              width: 130,
-              margin: const EdgeInsets.only(right: 10),
-              decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: const BorderRadius.all(Radius.circular(20))),
-            ),
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                //  mainAxisAlignment: MainAxisAlignment.start,
+            GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Productinfo(id: item.id),
+                  ),
+                );
+              },
+              child: Row(
                 children: [
-                  const Padding(padding: EdgeInsets.all(6)),
-                  Text(
-                    item.name,
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  const Text(
-                    "980",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  const Row(
-                    children: [
-                      Text(
-                        "567.9 (1)",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
                   SizedBox(
-                    height: 76,
-                    width: 170,
-                    child: Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        Positioned(
-                          child: IconButton(
-                              onPressed: () {
-                                removeItem(context, item.id);
-                              },
-                              icon: const Icon(
-                                Icons.cancel_outlined,
-                              )),
-                        )
-                      ],
+                    width: 150,
+                    height: 150,
+                    child: Image.network(
+                      item.image,
+                      height: double.infinity,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        //  mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 200,
+                            child: Text(
+                              item.name,
+                              style: const TextStyle(fontSize: 16),
+                              overflow: TextOverflow.ellipsis,  // Adds '...' if the text is too long
+                              maxLines: 2,  // Ensures the text stays within one line
+                            ),
+                          ),
+                          Text(
+                            'product price: ${item.price}\$',
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                        ]),
                   )
-                ])
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      removeItem(context, item.id);
+                    },
+                    icon: const Icon(Icons.delete),
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),
