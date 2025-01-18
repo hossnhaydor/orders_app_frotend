@@ -34,8 +34,8 @@ class AuthService {
         "message": "Register faild",
         "error": true,
         'errors': {
-          "phone": (errors['phone'] != null && errors['phone'] is List)
-              ? errors['phone'][0]
+          "phone": (errors['phone_number'] != null && errors['phone_number'] is List)
+              ? errors['phone_number'][0]
               : "",
           "name": (errors['name'] != null && errors['name'] is List)
               ? errors['name'][0]

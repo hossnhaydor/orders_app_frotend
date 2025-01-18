@@ -20,6 +20,6 @@ class Product {
         rating: json['rating'],
         name: json['name'],
         storeId: json['store_id'],
-        storeName: json['store']['name']);
+        storeName: 'store name');
   }
 }

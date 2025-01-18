@@ -70,6 +70,7 @@ class _SignInState extends State<SignIn> {
           setState(() {
             _errors = res['errors'];
           });
+          return;
         }
         throw ();
       }

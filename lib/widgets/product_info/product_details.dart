@@ -91,143 +91,126 @@ class ProductDetails extends StatelessWidget {
           ),
         ],
       ),
-      body: SizedBox(
-        width: screenWidth,
-        height: screenHeight,
-        child: Stack(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Image.network(
-                    'https://images.squarespace-cdn.com/content/v1/59da11e98419c28f51bab499/1550098469650-ZZ3JVUW5MOSE2BUQWO8J/1182_0027.jpg?format=750w',
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => StorePage(
-                                      storeId: product.storeId,
-                                      storeName: product.storeName,
-                                    ),
-                                  ));
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                            ),
-                            child: const Text(
-                              'go to store',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.star_rounded,
-                                color: Color.fromARGB(255, 241, 197, 52),
-                              ),
-                              Text("${product.rating}/5 ratings"),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          product.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-                bottom: 0,
-                child: SizedBox(
-                  width: screenWidth,
-                  child: Padding(
-                    padding: const EdgeInsets.all(
-                      32,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: screenWidth,
+          height: screenHeight,
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Image.network(
+                      'https://images.squarespace-cdn.com/content/v1/59da11e98419c28f51bab499/1550098469650-ZZ3JVUW5MOSE2BUQWO8J/1182_0027.jpg?format=750w',
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '${product.price}\$',
-                          style: const TextStyle(
-                            fontSize: 25,
-                            color: Color.fromARGB(255, 48, 214, 134),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Color.fromARGB(255, 241, 197, 52),
+                                ),
+                                Text("${product.rating}/5 ratings"),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            product.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          width: 160,
-                          child: inCart
-                              ? TextButton(
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.black,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const CartPage(),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text(
-                                    'product in cart',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                )
-                              : TextButton(
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.blue,
-                                  ),
-                                  onPressed: () {
-                                    if (user == null) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const SignUp(),
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    addToCart(context, product.id);
-                                  },
-                                  child: const Text(
-                                    'add to cart',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                        )
                       ],
                     ),
                   ),
-                ))
-          ],
+                ],
+              ),
+              Positioned(
+                  bottom: 0,
+                  child: SizedBox(
+                    width: screenWidth,
+                    child: Padding(
+                      padding: const EdgeInsets.all(
+                        32,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${product.price}\$',
+                            style: const TextStyle(
+                              fontSize: 25,
+                              color: Color.fromARGB(255, 48, 214, 134),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 160,
+                            child: inCart
+                                ? TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.black,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const CartPage(),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text(
+                                      'product in cart',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                    ),
+                                    onPressed: () {
+                                      if (user == null) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const SignUp(),
+                                          ),
+                                        );
+                                        return;
+                                      }
+                                      addToCart(context, product.id);
+                                    },
+                                    child: const Text(
+                                      'add to cart',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ))
+            ],
+          ),
         ),
       ),
     );

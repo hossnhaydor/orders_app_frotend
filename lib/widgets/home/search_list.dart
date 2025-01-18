@@ -39,7 +39,7 @@ class _SearchListState extends State<SearchList> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      Productinfo(id: item.id),
+                                      StorePage(storeId: item.id,storeName:item.name),
                                 ),
                               );
                             },

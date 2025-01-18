@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
         title: user != null ? Text(user.name) : const Text("Orders App"),
         leading: IconButton(
           onPressed: () {},
-          icon: const Icon(Icons.menu),
+          icon: const Icon(Icons.notifications_none),
         ),
         actions: [
           IconButton(

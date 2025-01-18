@@ -22,6 +22,7 @@ class ProductServices {
       }
       return ProductsApiResponse(products: []);
     } catch (err) {
+      print(err);
       return ProductsApiResponse(error: 'check network connection');
     }
   }
