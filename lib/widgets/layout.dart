@@ -50,6 +50,7 @@ class _LayoutState extends State<Layout> {
             Provider.of<CartIdsProvider>(context, listen: false);
         final userProvider = Provider.of<UserProvider>(context, listen: false);
         String? token = await getToken();
+        print(token);
         if (token != null) {
           setState(() {
             loading = true;
@@ -70,6 +71,7 @@ class _LayoutState extends State<Layout> {
           loading = false;
         });
       } catch (err) {
+        print(err);
         setState(() {
           loading = false;
         });
@@ -85,9 +87,10 @@ class _LayoutState extends State<Layout> {
     final PageController pageController = pageIndexPorvider.pageController;
 
     return loading
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
+        ?
+           const Center(
+              child: CircularProgressIndicator(),
+        )
         : Scaffold(
             body: Center(
                 child: PageView(
